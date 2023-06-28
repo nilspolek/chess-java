@@ -12,25 +12,26 @@ public class Board {
             if (i % 12 < 2) board[i] = 9;
         }
     }
-    public char getPice(int i){
-        switch (Math.abs(board[i])){
+
+    public char getPice(int i) {
+        switch (Math.abs(board[i])) {
             case 1 -> {
-                return(board[i]>0)?'P':'p';
+                return (board[i] > 0) ? 'P' : 'p';
             }
             case 2 -> {
-                return(board[i]>0)?'R':'r';
+                return (board[i] > 0) ? 'R' : 'r';
             }
             case 3 -> {
-                return(board[i]>0)?'N':'n';
+                return (board[i] > 0) ? 'N' : 'n';
             }
             case 4 -> {
-                return(board[i]>0)?'B':'b';
+                return (board[i] > 0) ? 'B' : 'b';
             }
             case 5 -> {
-                return(board[i]>0)?'D':'d';
+                return (board[i] > 0) ? 'D' : 'd';
             }
             case 6 -> {
-                return(board[i]>0)?'K':'k';
+                return (board[i] > 0) ? 'K' : 'k';
             }
         }
         return 'X';
