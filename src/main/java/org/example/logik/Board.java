@@ -4,38 +4,27 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class Board {
+    // 1 = Bauer
+    // 2 = Turm
+    // 3 = Springer
+    // 4 = Leufer
+    // 5 = Dame
+    // 6 = Koenig
+    // Die werte in negativ sind schwarz
+    boolean isWhite = true;
+
     Board() {
         for (int i = 0; i < board.length; i++) {
-            if (i < 24) board[i] = 9;
+            if (i < 23) board[i] = 9;
             if (i > 120) board[i] = 9;
             if (i % 12 > 9) board[i] = 9;
             if (i % 12 < 2) board[i] = 9;
         }
     }
 
-    public char getPice(int i) {
-        switch (Math.abs(board[i])) {
-            case 1 -> {
-                return (board[i] > 0) ? 'P' : 'p';
-            }
-            case 2 -> {
-                return (board[i] > 0) ? 'R' : 'r';
-            }
-            case 3 -> {
-                return (board[i] > 0) ? 'N' : 'n';
-            }
-            case 4 -> {
-                return (board[i] > 0) ? 'B' : 'b';
-            }
-            case 5 -> {
-                return (board[i] > 0) ? 'D' : 'd';
-            }
-            case 6 -> {
-                return (board[i] > 0) ? 'K' : 'k';
-            }
-        }
-        return 'X';
-    }
+    int[] board = new int[144];
+
+    ArrayList<Move> history = new ArrayList<>();
 
     public Board setFEN(String FEN) {
         String[] rows = FEN.split("/");
@@ -63,17 +52,29 @@ public class Board {
         return this;
     }
 
-    int[] board = new int[144];
-    boolean isWhite = true;
-    ArrayList<Move> history = new ArrayList<>();
-
-    // 1 = Bauer
-    // 2 = Turm
-    // 3 = Springer
-    // 4 = Leufer
-    // 5 = Dame
-    // 6 = Koenig
-    // Die werte in negativ sind schwarz
+    public char getPice(int i) {
+        switch (Math.abs(board[i])) {
+            case 1 -> {
+                return (board[i] > 0) ? 'P' : 'p';
+            }
+            case 2 -> {
+                return (board[i] > 0) ? 'R' : 'r';
+            }
+            case 3 -> {
+                return (board[i] > 0) ? 'N' : 'n';
+            }
+            case 4 -> {
+                return (board[i] > 0) ? 'B' : 'b';
+            }
+            case 5 -> {
+                return (board[i] > 0) ? 'D' : 'd';
+            }
+            case 6 -> {
+                return (board[i] > 0) ? 'K' : 'k';
+            }
+        }
+        return 'X';
+    }
 
     Stream<Move> pawnMoves(int i, boolean isBlack) {
         Stream.Builder<Move> sb = Stream.builder();
@@ -90,6 +91,27 @@ public class Board {
                 else sb.add(new Move(i, i - 12, 1));
                 if (board[i - 24] == 0 && 97 <= i && 105 >= i) sb.add(new Move(i, i - 24, 1));
             }
+        }
+        return sb.build();
+    }
+
+    Stream<Move> bishopMoves(int i, boolean isBlack) {
+        return Stream.concat(Stream.concat(Stream.concat(getLineFields(i, 11, isBlack, board[i]), getLineFields(i, 13, isBlack, board[i])), getLineFields(i, -13, isBlack, board[i])), getLineFields(i, -11, isBlack, board[i]));
+    }
+    Stream<Move> rookMoves(int i, boolean isBlack) {
+        return Stream.concat(Stream.concat(Stream.concat(getLineFields(i, 1, isBlack, board[i]), getLineFields(i, -1, isBlack, board[i])), getLineFields(i, -12, isBlack, board[i])), getLineFields(i, 12, isBlack, board[i]));
+    }
+    Stream<Move> queenMoves(int i, boolean isBlack) {
+        return Stream.concat(bishopMoves(i,isBlack),rookMoves(i,isBlack));
+    }
+
+    Stream<Move> getLineFields(int start, int position, boolean isBlack, int pice) {
+        Stream.Builder<Move> sb = Stream.<Move>builder();
+        int j = start;
+        while ((board[j + position] == 0 || ((isBlack) ? board[j + position] > 0 : board[j + position] < 0)) && board[j + position] != 9) {
+            j += position;
+            sb.add(new Move(start, j, pice));
+            if(((isBlack) ? board[j] > 0 : board[j] < 0)) break;
         }
         return sb.build();
     }
