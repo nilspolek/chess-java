@@ -14,6 +14,7 @@ steps:
         from_secret:  discordID
       webhook_token: 
         from_secret:  discordToken
+      avatar_url: https://plugins.drone.io/favicon.ico
       message: >
         {{#success build.status}}
           Build {{build.number}} succeeded. Good job {{build.author}}.
