@@ -7,3 +7,10 @@ steps:
     commands:
       - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       - mvn test -B 
+  - name: discord notification
+    image: appleboy/drone-discord
+    settings:
+      webhook_id: 
+        from_secret:  discordSecret
+      webhook_token: 
+        from_secret:  discordToken
