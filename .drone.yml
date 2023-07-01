@@ -14,6 +14,11 @@ steps:
         from_secret:  discordSecret
       webhook_token: 
         from_secret:  discordToken
-      message: "Test"
+      message: >
+        {{#success build.status}}
+          build {{build.number}} succeeded. Good job.
+        {{else}}
+           build {{build.number}} failed. Fix me please. 
+        {{/success}}
       tts: true
       username: appleboy
