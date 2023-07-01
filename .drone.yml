@@ -21,6 +21,6 @@ steps:
         {{else}}
            Build {{build.number}} failed. Fix me please. 
         {{/success}}
-        Git Message was {{build.message}} on Branch {{build.branch}} link: {{build.link}}
+        Link: {{build.link}}
         
       username: Drone CI
