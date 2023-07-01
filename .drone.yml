@@ -6,11 +6,11 @@ steps:
     image: maven:3.9.3-eclipse-temurin-20-alpine
     commands:
       - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-      - mvn test -B
+      - mvn test -B 
   - name: git-push
-  image: appleboy/drone-git-push
-  settings:
-    branch: master
-    remote: git@github.com:nilspolek/SchachPrjekt2.git
-    force: false
-    commit: true
+    image: appleboy/drone-git-push
+    settings:
+      branch: master
+      remote: git@github.com:nilspolek/SchachPrjekt2.git
+      force: false
+      commit: true
