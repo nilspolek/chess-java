@@ -16,8 +16,12 @@ steps:
         from_secret:  discordToken
       message: >
         {{#success build.status}}
-          Build {{build.number}} succeeded. Good job.
+          Build {{build.number}} succeeded. Good job {{build.author}}.
         {{else}}
            Build {{build.number}} failed. Fix me please. 
         {{/success}}
+        Git Message was {{build.message}}
+        On Branch {{build.branch}}
+        Link: {{build.link}}
+        
       username: Drone CI
