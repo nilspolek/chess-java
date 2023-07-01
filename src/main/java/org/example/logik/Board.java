@@ -29,7 +29,7 @@ public class Board {
 
     public Board setFEN(String FEN) {
         String[] rows = FEN.split("/");
-        int counter = 0;
+        int counter;
         int pice = 0;
         for (int i = 0; i < rows.length; i++) {
             char[] row = rows[i].toCharArray();
@@ -149,7 +149,7 @@ public class Board {
     }
 
     Stream<Move> getLineFields(int start, int position, boolean isBlack, int pice) {
-        Stream.Builder<Move> sb = Stream.<Move>builder();
+        Stream.Builder<Move> sb = Stream.builder();
         int j = start;
         while ((board[j + position] == 0 || ((isBlack) ? board[j + position] > 0 : board[j + position] < 0)) && board[j + position] != 9) {
             j += position;
