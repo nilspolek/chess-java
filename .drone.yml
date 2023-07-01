@@ -14,4 +14,4 @@ steps:
         from_secret:  discordSecret
       webhook_token: 
         from_secret:  discordToken
-      message: test
+      message: "Test"
