@@ -20,5 +20,4 @@ steps:
         {{else}}
            Build {{build.number}} failed. Fix me please. 
         {{/success}}
-      tts: false
-      username: appleboy
+      username: Drone CI
