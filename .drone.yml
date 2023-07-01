@@ -15,3 +15,5 @@ steps:
       webhook_token: 
         from_secret:  discordToken
       message: "Test"
+      tts: true
+      username: appleboy
