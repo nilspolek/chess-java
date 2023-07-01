@@ -1,7 +1,31 @@
 package org.example.logik;
 
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+
 class BoardTest {
+    @Test
+    void  testGetMoves(){
+        Board b = new Board();
+        b.setFEN("8/1q6/8/8/8/8/8/Q7");
+        b.getMoves(110).forEach(System.out::println);
+        assertEquals(21,b.getMoves(110).count());
+        assertEquals(23,b.getMoves(39).count());
+    }
+    @Test
+    void testIsControlled(){
+        Board b = new Board();
+        b.setFEN("8/1q6/8/8/8/8/8/Q7");
+        assertTrue(b.isControlled(26,false));
+        assertTrue(b.isControlled(33,false));
+        assertTrue(b.isControlled(117,false));
+        assertTrue(b.isControlled(117,true));
+        assertTrue(b.isControlled(45,true));
+        assertFalse(b.isControlled(45,false));
+        assertFalse(b.isControlled(57,false));
+    }
     @Test
     void testToString(){
         Board b = new Board();
