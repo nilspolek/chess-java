@@ -7,10 +7,3 @@ steps:
     commands:
       - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       - mvn test -B 
-  - name: git-push
-    image: appleboy/drone-git-push
-    settings:
-      branch: master
-      remote: git@github.com:nilspolek/SchachPrjekt2.git
-      force: false
-      commit: true
