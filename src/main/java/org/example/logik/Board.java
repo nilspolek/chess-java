@@ -101,7 +101,8 @@ public class Board {
         return all.filter(Objects::nonNull).anyMatch(e -> e.to() == field);
     }
 
-    Stream<Move> getMoves(int field) {
+    public Stream<Move> getMoves(int field) {
+        if(isWhite == (board[field] < 0)) return Stream.empty();
         Stream.Builder<Move> sb = Stream.builder();
         if (isControlled(getKing(board[field] < 0), board[field] > 0)) {
             int[] tempBoard = new int[board.length];
@@ -211,14 +212,13 @@ public class Board {
         Stream.Builder<Move> sb = Stream.builder();
         if (isBlack) {
             if (board[i + 12] == 0) {
-                if (110 <= i && 118 >= i) sb.add(new Move(i, i + 12, -5));
-                else if (board[i + 24] == 0 && 38 <= i && 46 >= i) sb.add(new Move(i, i + 24, -1));
+                if (110 <= i && 118 >= i) sb.add(new Move(i, i + 12, -1));
                 else sb.add(new Move(i, i + 12, -1));
-
+                if (board[i + 24] == 0 && 38 <= i && 46 >= i) sb.add(new Move(i, i + 24, -1));
             }
         } else {
             if (board[i - 12] == 0) {
-                if (38 <= i && 46 >= i) sb.add(new Move(i, i - 12, +5));
+                if (38 <= i && 46 >= i) sb.add(new Move(i, i - 12, +1));
                 else sb.add(new Move(i, i - 12, 1));
                 if (board[i - 24] == 0 && 97 <= i && 105 >= i) sb.add(new Move(i, i - 24, 1));
             }
@@ -319,7 +319,7 @@ public class Board {
     }
 
     boolean move(Move move) {
-        if (isWhite == move.pice() > 0 || getMoves(move.from()).noneMatch(e -> e.to() == move.to())) return false;
+        if (isWhite == move.pice() < 0 || getMoves(move.from()).noneMatch(e -> e.to() == move.to())) return false;
         if (move.from() == 26) movedPices[0] = true;
         if (move.from() == 110) movedPices[3] = true;
         if (move.from() == 117) movedPices[5] = true;
