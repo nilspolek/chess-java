@@ -1,11 +1,14 @@
 package org.example;
 
 import org.example.logik.Board;
+import org.example.logik.Move;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PShape;
 
 public class Main extends PApplet {
+    int clickedPice = 0;
+    int lastClickedPice = 0;
     static Board b;
     PShape[] shapes = new PShape[12];
     PImage bg;
@@ -43,13 +46,19 @@ public class Main extends PApplet {
         selectedField = loadImage("./pix/isSelected.png");
     }
 
+    public void mousePressed() {
+        int row = (int) (mouseY / 62.5);
+        int col = (int) (mouseX / 62.5);
+        b.move(new Move(clickedPice,row * 12 + 26 + col,b.board[clickedPice]));
+        clickedPice = row * 12 + 26 + col;
+    }
+
     @Override
     public void draw() {
         // Background
         image(bg, 0, 0, 500, 500);
-        shape(shapes[0], 0, 0, 62, 62);
         for (int i = 0; i < b.getBoard().length; i++) {
-            switch (b.getBoard()[i]){
+            switch (b.getBoard()[i]) {
                 case 1 -> shape(shapes[9], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
                 case 2 -> shape(shapes[11], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
                 case 3 -> shape(shapes[8], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
@@ -64,6 +73,7 @@ public class Main extends PApplet {
                 case -6 -> shape(shapes[1], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
             }
         }
+        b.getMoves(clickedPice).forEach(e -> image(selectedField, (float) (((e.to() - 2) % 12) * 62.5) + 10, (float) (((e.to() - 26) / 12) * 62.5) + 10, 42.5F, 42.5F));
     }
 
 }
