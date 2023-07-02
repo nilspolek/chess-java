@@ -27,7 +27,6 @@ public class Board {
     int[] board = new int[144];
 
     ArrayList<Move> history = new ArrayList<>();
-
     public Board setFEN(String FEN) {
         String[] rows = FEN.split("/");
         int counter;
@@ -79,34 +78,58 @@ public class Board {
     }
 
     boolean isControlled(int field, boolean byBlack) {
+        return isControlled(field, byBlack, board);
+    }
+
+    boolean isControlled(int field, boolean byBlack, int[] board) {
         Stream<Move> all = Stream.of(new Move[]{new Move(1, 2, 3)});
         for (int i = 25; i < 118; i++) {
-            if (board[i] == 0 || (byBlack) ? board[i] > 0 : board[i] < 0 || getMoves(i) == null) continue;
-            all = Stream.of(all, getMoves(i)).flatMap(Function.identity());
+            if (board[i] == 0 || (byBlack) ? board[i] > 0 : board[i] < 0 || getMovesWithoutCheck(i, board) == null)
+                continue;
+            all = Stream.of(all, getMovesWithoutCheck(i, board)).flatMap(Function.identity());
         }
         return all.filter(Objects::nonNull).anyMatch(e -> e.to() == field);
     }
 
     Stream<Move> getMoves(int field) {
+        Stream.Builder<Move> sb = Stream.builder();
+        if (isControlled(getKing(board[field] < 0), board[field] > 0)) {
+            int[] tempBoard = new int[board.length];
+            getMovesWithoutCheck(field).forEach(e -> {
+                System.arraycopy(board, 0, tempBoard, 0, board.length);
+                move(e, tempBoard);
+                if (!isControlled(getKing(board[field] < 0), board[field] > 0, tempBoard)) sb.add(e);
+            });
+            return Stream.concat(sb.build(), kingMoves(getKing(board[field] < 0), board[field] > 0));
+        }
+        return null;
+    }
+
+    Stream<Move> getMovesWithoutCheck(int field) {
+        return getMovesWithoutCheck(field, board);
+    }
+
+    Stream<Move> getMovesWithoutCheck(int field, int[] board) {
+
         boolean isBlack = board[field] < 0;
         switch (Math.abs(board[field])) {
             case 1 -> {
-                return this.pawnMoves(field, isBlack);
+                return this.pawnMoves(field, isBlack,board);
             }
             case 2 -> {
-                return this.rookMoves(field, isBlack);
+                return this.rookMoves(field, isBlack,board);
             }
             case 3 -> {
-                return this.ponyMoves(field, isBlack);
+                return this.ponyMoves(field, isBlack,board);
             }
             case 4 -> {
-                return this.bishopMoves(field, isBlack);
+                return this.bishopMoves(field, isBlack,board);
             }
             case 5 -> {
-                return this.queenMoves(field, isBlack);
+                return this.queenMoves(field, isBlack,board);
             }
             case 6 -> {
-                return this.kingMoves(field, isBlack);
+                return this.kingMoves(field, isBlack,board);
             }
             default -> {
                 return Stream.empty();
@@ -114,11 +137,14 @@ public class Board {
         }
     }
 
+    Stream<Move> kingMoves(int i, boolean isBlack, int[] board) {
+        return Stream.empty();
+    }
     Stream<Move> kingMoves(int i, boolean isBlack) {
-        return null;
+        return kingMoves(i,isBlack,board);
     }
 
-    Stream<Move> pawnMoves(int i, boolean isBlack) {
+    Stream<Move> pawnMoves(int i, boolean isBlack, int[] board) {
         Stream.Builder<Move> sb = Stream.builder();
         if (isBlack) {
             if (board[i + 12] == 0) {
@@ -137,53 +163,76 @@ public class Board {
         return sb.build();
     }
 
+    Stream<Move> pawnMoves(int i, boolean isBlack) {
+        return pawnMoves(i, isBlack, board);
+    }
+
     Stream<Move> bishopMoves(int i, boolean isBlack) {
-        return Stream.concat(Stream.concat(Stream.concat(getLineFields(i, 11, isBlack, board[i]), getLineFields(i, 13, isBlack, board[i])), getLineFields(i, -13, isBlack, board[i])), getLineFields(i, -11, isBlack, board[i]));
+        return bishopMoves(i, isBlack, board);
     }
 
+    Stream<Move> bishopMoves(int i, boolean isBlack, int[] board) {
+        return Stream.concat(Stream.concat(Stream.concat(getLineFields(i, 11, isBlack, board[i],board), getLineFields(i, 13, isBlack, board[i],board)), getLineFields(i, -13, isBlack, board[i],board)), getLineFields(i, -11, isBlack, board[i],board));
+    }
+
+    Stream<Move> rookMoves(int i, boolean isBlack, int[] board) {
+        return Stream.concat(Stream.concat(Stream.concat(getLineFields(i, 1, isBlack, board[i],board), getLineFields(i, -1, isBlack, board[i],board)), getLineFields(i, -12, isBlack, board[i],board)), getLineFields(i, 12, isBlack, board[i],board));
+    }
     Stream<Move> rookMoves(int i, boolean isBlack) {
-        return Stream.concat(Stream.concat(Stream.concat(getLineFields(i, 1, isBlack, board[i]), getLineFields(i, -1, isBlack, board[i])), getLineFields(i, -12, isBlack, board[i])), getLineFields(i, 12, isBlack, board[i]));
+        return rookMoves(i,isBlack,board);
     }
 
+    Stream<Move> queenMoves(int i, boolean isBlack, int[] board) {
+        return Stream.concat(bishopMoves(i, isBlack,board), rookMoves(i, isBlack,board));
+    }
     Stream<Move> queenMoves(int i, boolean isBlack) {
-        return Stream.concat(bishopMoves(i, isBlack), rookMoves(i, isBlack));
+        return queenMoves(i,isBlack,board);
     }
 
-    Stream<Move> getLineFields(int start, int position, boolean isBlack, int pice) {
+    Stream<Move> getLineFields(int start, int position, boolean isBlack, int pice, int[] board) {
         Stream.Builder<Move> sb = Stream.builder();
         int j = start;
         while ((board[j + position] == 0 || ((isBlack) ? board[j + position] > 0 : board[j + position] < 0)) && board[j + position] != 9) {
             j += position;
             sb.add(new Move(start, j, pice));
-            if ((isBlack)? board[j] == 6 : board[j] == -6) continue;
+            if ((isBlack) ? board[j] == 6 : board[j] == -6) continue;
             if (((isBlack) ? board[j] > 0 : board[j] < 0)) break;
         }
         return sb.build();
     }
-    int getKing(boolean isBlack){
+    Stream<Move> getLineFields(int start, int position, boolean isBlack, int pice) {
+        return getLineFields(start,position,isBlack,pice,board);
+    }
+
+    int getKing(boolean isBlack) {
         for (int i = 0; i < board.length; i++) {
-            if ((isBlack)?board[i] == -6:board[i] == 6) return i;
+            if ((isBlack) ? board[i] == -6 : board[i] == 6) return i;
         }
         return 0;
     }
 
     Stream<Move> ponyMoves(int i, boolean isBlack) {
+        return ponyMoves(i,isBlack,board);
+    }
+    Stream<Move> ponyMoves(int i, boolean isBlack,int[] board) {
         Stream.Builder<Move> sb = Stream.builder();
-        sb.add(getPonyMove(i, 1, 12, isBlack, board[i]));
-        sb.add(getPonyMove(i, 1, -12, isBlack, board[i]));
-        sb.add(getPonyMove(i, -1, 12, isBlack, board[i]));
-        sb.add(getPonyMove(i, -1, -12, isBlack, board[i]));
-        sb.add(getPonyMove(i, 12, 1, isBlack, board[i]));
-        sb.add(getPonyMove(i, 12, -1, isBlack, board[i]));
-        sb.add(getPonyMove(i, -12, 1, isBlack, board[i]));
-        sb.add(getPonyMove(i, -12, -1, isBlack, board[i]));
+        sb.add(getPonyMove(i, 1, 12, isBlack, board[i],board));
+        sb.add(getPonyMove(i, 1, -12, isBlack, board[i],board));
+        sb.add(getPonyMove(i, -1, 12, isBlack, board[i],board));
+        sb.add(getPonyMove(i, -1, -12, isBlack, board[i],board));
+        sb.add(getPonyMove(i, 12, 1, isBlack, board[i],board));
+        sb.add(getPonyMove(i, 12, -1, isBlack, board[i],board));
+        sb.add(getPonyMove(i, -12, 1, isBlack, board[i],board));
+        sb.add(getPonyMove(i, -12, -1, isBlack, board[i],board));
         return sb.build().filter(Objects::nonNull);
     }
 
-    Move getPonyMove(int start, int dir1, int dir2, boolean isBlack, int pice) {
+    Move getPonyMove(int start, int dir1, int dir2, boolean isBlack, int pice,int[] board) {
         return ((board[start + dir1 + dir1 + dir2] == 0 || ((isBlack) ? board[start + dir1 + dir1 + dir2] > 0 : board[start + dir1 + dir1 + dir2] < 0)) && board[start + dir1 + dir1 + dir2] != 9) ? new Move(start, start + dir1 + dir1 + dir2, pice) : null;
     }
-
+    Move getPonyMove(int start, int dir1, int dir2, boolean isBlack, int pice) {
+        return getPonyMove(start, dir1, dir2, isBlack, pice, board);
+    }
 
     @Override
     public String toString() {
@@ -195,7 +244,9 @@ public class Board {
         return sb.toString();
     }
 
-    boolean move(Move move) {
-        return false;
+    boolean move(Move move, int[] board) {
+        board[move.from()] = 0;
+        board[move.to()] = move.pice();
+        return true;
     }
 }

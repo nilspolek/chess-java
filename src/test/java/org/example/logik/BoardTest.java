@@ -7,6 +7,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
     @Test
+    void testGetMovesWithoutCheckInkBoard(){
+        Board b = new Board();
+        b.setFEN("r7/8/8/8/8/8/R7/K5p1");
+        Board c = new Board();
+        c.setFEN("r7/8/8/p7/8/8/R7/K7");
+        c.getMovesWithoutCheck(26).forEach(System.out::println);
+    }
+    @Test
+    void isControlled(){
+        Board b = new Board();
+        b.setFEN("r7/8/8/7p/8/R7/8/K7");
+        Board c = new Board();
+        c.setFEN("r7/8/8/7p/8/2R5/8/K7");
+        assertTrue(c.isControlled(110,true));
+        assertTrue(b.isControlled(110,true,c.board));
+
+    }
+    @Test
+    void testGetMoves(){
+        Board b = new Board();
+        b.setFEN("r7/8/8/8/8/8/2R5/K5p1");
+        System.out.println(b.board[100]);
+        b.getMoves(100).forEach(System.out::println);
+        assertTrue(b.getMoves(100).anyMatch(e -> e.to() == 98));
+        assertEquals(1, b.getMoves(100).count());
+    }
+    @Test
     void testGetKing(){
         Board b = new Board();
         b.setFEN("k7/8/8/8/8/3P4/8/3N3K");
@@ -14,12 +41,12 @@ class BoardTest {
         assertEquals(117,b.getKing(false));
     }
     @Test
-    void  testGetMoves(){
+    void  testGetMovesWithoutCheck(){
         Board b = new Board();
         b.setFEN("8/1q6/8/8/8/8/8/Q7");
-        b.getMoves(110).forEach(System.out::println);
-        assertEquals(21,b.getMoves(110).count());
-        assertEquals(23,b.getMoves(39).count());
+        b.getMovesWithoutCheck(110).forEach(System.out::println);
+        assertEquals(21,b.getMovesWithoutCheck(110).count());
+        assertEquals(23,b.getMovesWithoutCheck(39).count());
     }
     @Test
     void testIsControlled(){
@@ -31,6 +58,8 @@ class BoardTest {
         assertTrue(b.isControlled(113,false));
         assertTrue(b.isControlled(103,true));
         assertFalse(b.isControlled(104,true));
+        b.setFEN("r7/8/8/8/8/8/R7/K5p1");
+        assertFalse(b.isControlled(110,true));
     }
     @Test
     void testToString(){
