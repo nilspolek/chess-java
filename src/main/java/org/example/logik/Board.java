@@ -2,6 +2,7 @@ package org.example.logik;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class Board {
@@ -80,8 +81,8 @@ public class Board {
     boolean isControlled(int field, boolean byBlack) {
         Stream<Move> all = Stream.of(new Move[]{new Move(1, 2, 3)});
         for (int i = 25; i < 118; i++) {
-            if (board[i] == 0 || (byBlack) ? board[i] > 0 : board[i] < 0 || getMoves(field) == null) continue;
-            all = Stream.concat(all, getMoves(i));
+            if (board[i] == 0 || (byBlack) ? board[i] > 0 : board[i] < 0 || getMoves(i) == null) continue;
+            all = Stream.of(all, getMoves(i)).flatMap(Function.identity());
         }
         return all.filter(Objects::nonNull).anyMatch(e -> e.to() == field);
     }
@@ -150,14 +151,26 @@ public class Board {
 
     Stream<Move> getLineFields(int start, int position, boolean isBlack, int pice) {
         Stream.Builder<Move> sb = Stream.builder();
+        sb.add(new Move(1,1,0));
         int j = start;
         while ((board[j + position] == 0 || ((isBlack) ? board[j + position] > 0 : board[j + position] < 0)) && board[j + position] != 9) {
             j += position;
             sb.add(new Move(start, j, pice));
+            if ((isBlack)? board[j] == 6 : board[j] == -6) continue;
             if (((isBlack) ? board[j] > 0 : board[j] < 0)) break;
         }
         return sb.build();
     }
+//    Stream<Move> getLineFields(int start, int position, boolean isBlack, int pice) {
+//        Stream.Builder<Move> sb = Stream.builder();
+//        int j = start;
+//        while ((board[j + position] == 0 || ((isBlack) ? board[j + position] > 0 : board[j + position] < 0)) && board[j + position] != 9) {
+//            j += position;
+//            sb.add(new Move(start, j, pice));
+//            if (((isBlack) ? board[j] > 0 : board[j] < 0)) break;
+//        }
+//        return sb.build();
+//    }
 
     Stream<Move> ponyMoves(int i, boolean isBlack) {
         Stream.Builder<Move> sb = Stream.builder();

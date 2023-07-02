@@ -17,14 +17,13 @@ class BoardTest {
     @Test
     void testIsControlled(){
         Board b = new Board();
-        b.setFEN("8/1q6/8/8/8/8/8/Q7");
-        assertTrue(b.isControlled(26,false));
-        assertTrue(b.isControlled(33,false));
-        assertTrue(b.isControlled(117,false));
-        assertTrue(b.isControlled(117,true));
-        assertTrue(b.isControlled(45,true));
-        assertFalse(b.isControlled(45,false));
-        assertFalse(b.isControlled(57,false));
+        b.setFEN("8/q7/8/8/8/k7/8/Q2n4");
+        assertFalse(b.isControlled(26,false));
+        assertTrue(b.isControlled(38,false));
+        assertFalse(b.isControlled(117,false));
+        assertTrue(b.isControlled(113,false));
+        assertTrue(b.isControlled(103,true));
+        assertFalse(b.isControlled(104,true));
     }
     @Test
     void testToString(){
