@@ -244,7 +244,13 @@ public class Board {
         return sb.toString();
     }
 
-    boolean move(Move move, int[] board) {
+    private boolean move(Move move, int[] board) {
+        board[move.from()] = 0;
+        board[move.to()] = move.pice();
+        return true;
+    }
+    boolean move(Move move) {
+        if(isWhite == move.pice() > 0 || getMoves(move.from()).noneMatch(e ->e.to() == move.to())) return false;
         board[move.from()] = 0;
         board[move.to()] = move.pice();
         return true;
