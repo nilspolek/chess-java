@@ -151,7 +151,6 @@ public class Board {
 
     Stream<Move> getLineFields(int start, int position, boolean isBlack, int pice) {
         Stream.Builder<Move> sb = Stream.builder();
-        sb.add(new Move(1,1,0));
         int j = start;
         while ((board[j + position] == 0 || ((isBlack) ? board[j + position] > 0 : board[j + position] < 0)) && board[j + position] != 9) {
             j += position;
