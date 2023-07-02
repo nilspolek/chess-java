@@ -7,6 +7,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
     @Test
+    void testGetKing(){
+        Board b = new Board();
+        b.setFEN("k7/8/8/8/8/3P4/8/3N3K");
+        assertEquals(26,b.getKing(true));
+        assertEquals(117,b.getKing(false));
+    }
+    @Test
     void  testGetMoves(){
         Board b = new Board();
         b.setFEN("8/1q6/8/8/8/8/8/Q7");

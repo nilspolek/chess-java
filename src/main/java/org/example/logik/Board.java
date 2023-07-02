@@ -161,16 +161,12 @@ public class Board {
         }
         return sb.build();
     }
-//    Stream<Move> getLineFields(int start, int position, boolean isBlack, int pice) {
-//        Stream.Builder<Move> sb = Stream.builder();
-//        int j = start;
-//        while ((board[j + position] == 0 || ((isBlack) ? board[j + position] > 0 : board[j + position] < 0)) && board[j + position] != 9) {
-//            j += position;
-//            sb.add(new Move(start, j, pice));
-//            if (((isBlack) ? board[j] > 0 : board[j] < 0)) break;
-//        }
-//        return sb.build();
-//    }
+    int getKing(boolean isBlack){
+        for (int i = 0; i < board.length; i++) {
+            if ((isBlack)?board[i] == -6:board[i] == 6) return i;
+        }
+        return 0;
+    }
 
     Stream<Move> ponyMoves(int i, boolean isBlack) {
         Stream.Builder<Move> sb = Stream.builder();
