@@ -12,7 +12,7 @@ class BoardTest {
         b.setFEN("r7/8/8/8/8/8/R7/K5p1");
         Board c = new Board();
         c.setFEN("r7/8/8/p7/8/8/R7/K7");
-        c.getMovesWithoutCheck(26).forEach(System.out::println);
+        c.getMovesWithoutCheckExcludingKing(26).forEach(System.out::println);
     }
     @Test
     void isControlled(){
@@ -44,9 +44,9 @@ class BoardTest {
     void  testGetMovesWithoutCheck(){
         Board b = new Board();
         b.setFEN("8/1q6/8/8/8/8/8/Q7");
-        b.getMovesWithoutCheck(110).forEach(System.out::println);
-        assertEquals(21,b.getMovesWithoutCheck(110).count());
-        assertEquals(23,b.getMovesWithoutCheck(39).count());
+        b.getMovesWithoutCheckExcludingKing(110).forEach(System.out::println);
+        assertEquals(21,b.getMovesWithoutCheckExcludingKing(110).count());
+        assertEquals(23,b.getMovesWithoutCheckExcludingKing(39).count());
     }
     @Test
     void testIsControlled(){

@@ -14,6 +14,8 @@ public class Board {
     // 6 = Koenig
     // Die werte in negativ sind schwarz
     boolean isWhite = true;
+    boolean[] movedPices = new boolean[]{false,false,false,
+            false,false,false};
 
     Board() {
         for (int i = 0; i < board.length; i++) {
@@ -84,9 +86,9 @@ public class Board {
     boolean isControlled(int field, boolean byBlack, int[] board) {
         Stream<Move> all = Stream.of(new Move[]{new Move(1, 2, 3)});
         for (int i = 25; i < 118; i++) {
-            if (board[i] == 0 || (byBlack) ? board[i] > 0 : board[i] < 0 || getMovesWithoutCheck(i, board) == null)
+            if (board[i] == 0 || (byBlack) ? board[i] > 0 : board[i] < 0 || getMovesWithoutCheckExcludingKing(i, board) == null)
                 continue;
-            all = Stream.of(all, getMovesWithoutCheck(i, board)).flatMap(Function.identity());
+            all = Stream.of(all, getMovesWithoutCheckExcludingKing(i, board)).flatMap(Function.identity());
         }
         return all.filter(Objects::nonNull).anyMatch(e -> e.to() == field);
     }
@@ -102,14 +104,16 @@ public class Board {
             });
             return Stream.concat(sb.build(), kingMoves(getKing(board[field] < 0), board[field] > 0));
         }
-        return null;
+        return getMovesWithoutCheck(field);
     }
 
-    Stream<Move> getMovesWithoutCheck(int field) {
-        return getMovesWithoutCheck(field, board);
+    Stream<Move> getMovesWithoutCheckExcludingKing(int field) {
+        return getMovesWithoutCheckExcludingKing(field, board);
     }
-
-    Stream<Move> getMovesWithoutCheck(int field, int[] board) {
+    Stream<Move> getMovesWithoutCheck(int field){
+        return getMovesWithoutCheck(field,board);
+    }
+    Stream<Move> getMovesWithoutCheck(int field, int[] board){
 
         boolean isBlack = board[field] < 0;
         switch (Math.abs(board[field])) {
@@ -137,7 +141,51 @@ public class Board {
         }
     }
 
+    Stream<Move> getMovesWithoutCheckExcludingKing(int field, int[] board) {
+
+        boolean isBlack = board[field] < 0;
+        switch (Math.abs(board[field])) {
+            case 1 -> {
+                return this.pawnMoves(field, isBlack,board);
+            }
+            case 2 -> {
+                return this.rookMoves(field, isBlack,board);
+            }
+            case 3 -> {
+                return this.ponyMoves(field, isBlack,board);
+            }
+            case 4 -> {
+                return this.bishopMoves(field, isBlack,board);
+            }
+            case 5 -> {
+                return this.queenMoves(field, isBlack,board);
+            }
+//            case 6 -> {
+//                return this.kingMoves(field, isBlack,board);
+//            }
+            default -> {
+                return Stream.empty();
+            }
+        }
+    }
+
     Stream<Move> kingMoves(int i, boolean isBlack, int[] board) {
+        Stream.Builder<Move> sb = Stream.builder();
+        if(isControlled(i-11,!isBlack,board))sb.add(new Move(i,i-11,(isBlack)?-6:6));
+        if(isControlled(i-12,!isBlack,board))sb.add(new Move(i,i-12,(isBlack)?-6:6));
+        if(isControlled(i-13,!isBlack,board))sb.add(new Move(i,i-13,(isBlack)?-6:6));
+        if(isControlled(i-1,!isBlack,board))sb.add(new Move(i,i-1,(isBlack)?-6:6));
+        if(isControlled(i+1,!isBlack,board))sb.add(new Move(i,i+1,(isBlack)?-6:6));
+        if(isControlled(i+11,!isBlack,board))sb.add(new Move(i,i+11,(isBlack)?-6:6));
+        if(isControlled(i+12,!isBlack,board))sb.add(new Move(i,i+12,(isBlack)?-6:6));
+        if(isControlled(i+13,!isBlack,board))sb.add(new Move(i,i+13,(isBlack)?-6:6));
+        if(isBlack){
+            if(movedPices[0] && movedPices[1] && isControlled(27,false,board) && isControlled(28,false,board) && isControlled(29,false,board) && isControlled(30,false,board) && board[28]==0 && board[29]==0)sb.add(new Move(i,28,-6));
+            if(movedPices[1] && movedPices[2] && isControlled(30,false,board) && isControlled(31,false,board) && isControlled(32,false,board) && board[31]==0 && board[32]==0)sb.add(new Move(i,32,-6));
+        }else {
+            if(movedPices[3] && movedPices[4] && isControlled(112,true,board) && isControlled(113,true,board) && isControlled(114,true,board) && board[111]==0 && board[112]==0 && board[113]==0)sb.add(new Move(i,111,6));
+            if(movedPices[4] && movedPices[5] && isControlled(114,true,board) && isControlled(115,true,board) && isControlled(116,true,board) && board[115]==0 && board[116]==0)sb.add(new Move(i,116,6));
+        }
         return Stream.empty();
     }
     Stream<Move> kingMoves(int i, boolean isBlack) {
@@ -251,6 +299,44 @@ public class Board {
     }
     boolean move(Move move) {
         if(isWhite == move.pice() > 0 || getMoves(move.from()).noneMatch(e ->e.to() == move.to())) return false;
+        if(move.from() == 26) movedPices[0] = true;
+        if(move.from() == 110) movedPices[3] = true;
+        if(move.from() == 117) movedPices[5] = true;
+        if(move.from() == 33) movedPices[2] = true;
+        if(move.from() == 114) movedPices[4] = true;
+        if(move.from() == 30) movedPices[1] = true;
+        if(move.from() == 30){
+            if(move.to() == 28){
+                board[26] = 0;
+                board[29] = -2;
+                board[30] = 0;
+                board[28] = -6;
+                return true;
+
+            } else if (move.to() == 32) {
+                board[26] = 0;
+                board[31] = -2;
+                board[30] = 0;
+                board[32] = -6;
+                return true;
+            }
+        }
+        if(move.from() == 114){
+            if(move.to() == 112){
+                board[110] = 0;
+                board[113] = 2;
+                board[114] = 0;
+                board[112] = 6;
+                return true;
+
+            } else if (move.to() == 116) {
+                board[117] = 0;
+                board[115] = 2;
+                board[114] = 0;
+                board[116] = 6;
+                return true;
+            }
+        }
         board[move.from()] = 0;
         board[move.to()] = move.pice();
         return true;
