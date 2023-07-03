@@ -105,16 +105,16 @@ public class Board {
     public Stream<Move> getMoves(int field) {
         if (isWhite == (board[field] < 0)) return Stream.empty();
         Stream.Builder<Move> sb = Stream.builder();
-        if (isControlled(getKing(board[field] < 0), board[field] > 0)) {
+//        if (isControlled(getKing(board[field] < 0), board[field] > 0)) {
             int[] tempBoard = new int[board.length];
             getMovesWithoutCheck(field).forEach(e -> {
                 System.arraycopy(board, 0, tempBoard, 0, board.length);
                 move(e, tempBoard);
                 if (!isControlled(getKing(board[field] < 0), board[field] > 0, tempBoard)) sb.add(e);
             });
-            return Stream.concat(sb.build(), kingMoves(getKing(board[field] < 0), board[field] < 0));
-        }
-        return getMovesWithoutCheck(field);
+            return Stream.concat(sb.build(), kingMoves(getKing(board[field] < 0), board[field] < 0)).filter(e -> e.from() == field).distinct();
+//        }
+//        return getMovesWithoutCheck(field).filter(e -> e.from() == field);
     }
 
     Stream<Move> getMovesWithoutCheckExcludingKing(int field) {

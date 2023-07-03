@@ -19,6 +19,7 @@ class KingTest {
         Board b = new Board();
         b.setFEN("kr6/8/8/3B4/8/8/8/8");
         b.isWhite = false;
+        b.getAllMoves().forEach(System.out::println);
         assertEquals(2,b.getAllMoves().count());
     }
     @Test
