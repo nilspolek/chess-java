@@ -1,4 +1,4 @@
-package org.example.logik;
+package com.github.nilspolek;
 
 import org.junit.jupiter.api.Test;
 class QueenTest {

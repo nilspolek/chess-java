@@ -1,4 +1,4 @@
-package org.example.logik;
+package com.github.nilspolek;
 
 import java.util.ArrayList;
 import java.util.Objects;
