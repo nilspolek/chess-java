@@ -7,18 +7,23 @@ import processing.core.PImage;
 import processing.core.PShape;
 
 public class Main extends PApplet {
-    int clickedPice = 0;
+    int clickedPice = 25;
     int lastClickedPice = 0;
     static Board b;
     PShape[] shapes = new PShape[12];
     PImage bg;
     PImage selectedField;
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
         String[] appArgs = {"Chess"};
         Main mySketch = new Main();
         b = new Board();
-        b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        if(args.length == 0){
+//            b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+            b.setFEN("r3k2r/8/8/8/8/8/8/8");
+        b.isWhite = false;}
+        else
+            b.setFEN(args[0]);
         PApplet.runSketch(appArgs, mySketch);
     }
 
@@ -49,7 +54,8 @@ public class Main extends PApplet {
     public void mousePressed() {
         int row = (int) (mouseY / 62.5);
         int col = (int) (mouseX / 62.5);
-        b.move(new Move(clickedPice,row * 12 + 26 + col,b.board[clickedPice]));
+        if(clickedPice != 25)
+            b.move(new Move(clickedPice,(row * 12) + 26 + col,b.board[clickedPice]));
         clickedPice = row * 12 + 26 + col;
     }
 
@@ -73,7 +79,8 @@ public class Main extends PApplet {
                 case -6 -> shape(shapes[1], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
             }
         }
-        b.getMoves(clickedPice).forEach(e -> image(selectedField, (float) (((e.to() - 2) % 12) * 62.5) + 10, (float) (((e.to() - 26) / 12) * 62.5) + 10, 42.5F, 42.5F));
+        if(clickedPice > 25 && clickedPice < 118)
+            b.getMoves(clickedPice).forEach(e -> image(selectedField, (float) (((e.to() - 2) % 12) * 62.5) + 10, (float) (((e.to() - 26) / 12) * 62.5) + 10, 42.5F, 42.5F));
     }
 
 }

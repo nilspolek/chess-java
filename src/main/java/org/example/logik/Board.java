@@ -14,7 +14,7 @@ public class Board {
     // 5 = Dame
     // 6 = Koenig
     // Die werte in negativ sind schwarz
-    boolean isWhite = true;
+    public boolean isWhite = true;
     boolean[] movedPices = new boolean[]{false, false, false, false, false, false};
 
     public Board() {
@@ -209,14 +209,14 @@ public class Board {
         if (!isControlled(i + 13, !isBlack, board) && ((isBlack) ? board[i + 13] >= 0 : board[i + 13] <= 0) && board[i + 13] != 9)
             sb.add(new Move(i, i + 13, (isBlack) ? -6 : 6));
         if (isBlack) {
-            if (movedPices[0] && movedPices[1] && isControlled(27, false, board) && isControlled(28, false, board) && isControlled(29, false, board) && isControlled(30, false, board) && board[28] == 0 && board[29] == 0)
+            if (!movedPices[0] && !movedPices[1] && !isControlled(27, false, board) && !isControlled(28, false, board) && !isControlled(29, false, board) && !isControlled(30, false, board) && board[28] == 0 && board[29] == 0)
                 sb.add(new Move(i, 28, -6));
-            if (movedPices[1] && movedPices[2] && isControlled(30, false, board) && isControlled(31, false, board) && isControlled(32, false, board) && board[31] == 0 && board[32] == 0)
+            if (!movedPices[1] && !movedPices[2] && !isControlled(30, false, board) && !isControlled(31, false, board) && !isControlled(32, false, board) && board[31] == 0 && board[32] == 0)
                 sb.add(new Move(i, 32, -6));
         } else {
-            if (movedPices[3] && movedPices[4] && isControlled(112, true, board) && isControlled(113, true, board) && isControlled(114, true, board) && board[111] == 0 && board[112] == 0 && board[113] == 0)
-                sb.add(new Move(i, 111, 6));
-            if (movedPices[4] && movedPices[5] && isControlled(114, true, board) && isControlled(115, true, board) && isControlled(116, true, board) && board[115] == 0 && board[116] == 0)
+            if (!movedPices[3] && !movedPices[4] && !isControlled(112, true, board) && !isControlled(113, true, board) && !isControlled(114, true, board) && board[111] == 0 && board[112] == 0 && board[113] == 0)
+                sb.add(new Move(i, 112, 6));
+            if (!movedPices[4] && !movedPices[5] && !isControlled(114, true, board) && !isControlled(115, true, board) && !isControlled(116, true, board) && board[115] == 0 && board[116] == 0)
                 sb.add(new Move(i, 116, 6));
         }
         return sb.build();
@@ -362,13 +362,15 @@ public class Board {
                 board[29] = -2;
                 board[30] = 0;
                 board[28] = -6;
+                isWhite = !isWhite;
                 return true;
 
             } else if (move.to() == 32) {
-                board[26] = 0;
+                board[33] = 0;
                 board[31] = -2;
                 board[30] = 0;
                 board[32] = -6;
+                isWhite = !isWhite;
                 return true;
             }
         }
@@ -378,6 +380,7 @@ public class Board {
                 board[113] = 2;
                 board[114] = 0;
                 board[112] = 6;
+                isWhite = !isWhite;
                 return true;
 
             } else if (move.to() == 116) {
@@ -385,6 +388,7 @@ public class Board {
                 board[115] = 2;
                 board[114] = 0;
                 board[116] = 6;
+                isWhite = !isWhite;
                 return true;
             }
         }

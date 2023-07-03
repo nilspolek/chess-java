@@ -5,7 +5,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class KingTest {
-
+    @Test
+    void testCastel(){
+        Board b = new Board();
+        b.setFEN("r3k2r/8/8/8/8/8/8/8");
+        b.kingMoves(30,true).forEach(System.out::println);
+    }
     @Test
     void kingMoves() {
         Board b = new Board();
