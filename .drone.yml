@@ -5,6 +5,7 @@ steps:
   - name: Test Project
     image: maven:3.9.3-eclipse-temurin-20-alpine
     commands:
+      - apk add zip
       - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       - mvn test -B
       - mvn clean package
