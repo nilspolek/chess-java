@@ -7,7 +7,6 @@ steps:
     commands:
       - apk add zip
       - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-      - mvn test -B
       - mvn clean package
       - mkdir Schachprojekt
       - cp ./target/SchachPrjekt2-1.0-jar-with-dependencies.jar ./Schachprojekt/SchachProjekt.jar
