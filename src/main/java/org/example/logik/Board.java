@@ -211,12 +211,16 @@ public class Board {
     Stream<Move> pawnMoves(int i, boolean isBlack, int[] board) {
         Stream.Builder<Move> sb = Stream.builder();
         if (isBlack) {
+            if(board[i+11] > 0) sb.add(new Move(i,i+11,-1));
+            if(board[i+13] > 0) sb.add(new Move(i,i+13,-1));
             if (board[i + 12] == 0) {
                 if (110 <= i && 118 >= i) sb.add(new Move(i, i + 12, -1));
                 else sb.add(new Move(i, i + 12, -1));
                 if (board[i + 24] == 0 && 38 <= i && 46 >= i) sb.add(new Move(i, i + 24, -1));
             }
         } else {
+            if(board[i-11] < 0) sb.add(new Move(i,i-11,1));
+            if(board[i-13] < 0) sb.add(new Move(i,i-13,1));
             if (board[i - 12] == 0) {
                 if (38 <= i && 46 >= i) sb.add(new Move(i, i - 12, +1));
                 else sb.add(new Move(i, i - 12, 1));
