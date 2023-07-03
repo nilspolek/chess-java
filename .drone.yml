@@ -46,3 +46,18 @@ steps:
       files: release/*
     when:
       event: tag
+
+  - name: discord notification
+    image: appleboy/drone-discord
+    settings:
+      webhook_id:
+        from_secret: discordID
+      webhook_token:
+        from_secret: discordToken
+      avatar_url: https://styles.redditmedia.com/t5_jt7nk/styles/communityIcon_62qfghr0oq931.png
+      message: >
+        Successful released on github
+
+      username: Drone CI
+      when:
+        event: tag
