@@ -1,7 +1,6 @@
 package org.example.logik;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -115,6 +114,14 @@ public class Board {
             return Stream.concat(sb.build(), kingMoves(getKing(board[field] < 0), board[field] < 0)).filter(e -> e.from() == field).distinct();
 //        }
 //        return getMovesWithoutCheck(field).filter(e -> e.from() == field);
+    }
+    public void isCheckMate(){
+        if(this.getAllMoves().noneMatch(e -> e.pice() < 0) && !isWhite){
+            System.out.println("White won");
+        }
+        if(this.getAllMoves().noneMatch(e -> e.pice() > 0)&& isWhite){
+            System.out.println("Black won");
+        }
     }
 
     Stream<Move> getMovesWithoutCheckExcludingKing(int field) {
@@ -342,6 +349,7 @@ public class Board {
         return sb.toString();
     }
 
+
     private boolean move(Move move, int[] board) {
         board[move.from()] = 0;
         board[move.to()] = move.pice();
@@ -363,6 +371,7 @@ public class Board {
                 board[30] = 0;
                 board[28] = -6;
                 isWhite = !isWhite;
+                isCheckMate();
                 return true;
 
             } else if (move.to() == 32) {
@@ -371,6 +380,7 @@ public class Board {
                 board[30] = 0;
                 board[32] = -6;
                 isWhite = !isWhite;
+                isCheckMate();
                 return true;
             }
         }
@@ -381,6 +391,7 @@ public class Board {
                 board[114] = 0;
                 board[112] = 6;
                 isWhite = !isWhite;
+                isCheckMate();
                 return true;
 
             } else if (move.to() == 116) {
@@ -389,12 +400,68 @@ public class Board {
                 board[114] = 0;
                 board[116] = 6;
                 isWhite = !isWhite;
+                isCheckMate();
                 return true;
             }
         }
         board[move.from()] = 0;
         board[move.to()] = move.pice();
         isWhite = !isWhite;
+        isCheckMate();
+        return true;
+    }
+    public boolean move(Move move, boolean[] movedPices, int[]board,boolean isWhite) {
+        if (isWhite == move.pice() < 0 || getMoves(move.from()).noneMatch(e -> e.to() == move.to())) return false;
+        if (move.from() == 26) movedPices[0] = true;
+        if (move.from() == 110) movedPices[3] = true;
+        if (move.from() == 117) movedPices[5] = true;
+        if (move.from() == 33) movedPices[2] = true;
+        if (move.from() == 114) movedPices[4] = true;
+        if (move.from() == 30) movedPices[1] = true;
+        if (move.from() == 30) {
+            if (move.to() == 28) {
+                board[26] = 0;
+                board[29] = -2;
+                board[30] = 0;
+                board[28] = -6;
+                isWhite = !isWhite;
+                isCheckMate();
+                return true;
+
+            } else if (move.to() == 32) {
+                board[33] = 0;
+                board[31] = -2;
+                board[30] = 0;
+                board[32] = -6;
+                isWhite = !isWhite;
+                isCheckMate();
+                return true;
+            }
+        }
+        if (move.from() == 114) {
+            if (move.to() == 112) {
+                board[110] = 0;
+                board[113] = 2;
+                board[114] = 0;
+                board[112] = 6;
+                isWhite = !isWhite;
+                isCheckMate();
+                return true;
+
+            } else if (move.to() == 116) {
+                board[117] = 0;
+                board[115] = 2;
+                board[114] = 0;
+                board[116] = 6;
+                isWhite = !isWhite;
+                isCheckMate();
+                return true;
+            }
+        }
+        board[move.from()] = 0;
+        board[move.to()] = move.pice();
+        isWhite = !isWhite;
+        isCheckMate();
         return true;
     }
 }

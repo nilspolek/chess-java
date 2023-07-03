@@ -18,10 +18,8 @@ public class Main extends PApplet {
         String[] appArgs = {"Chess"};
         Main mySketch = new Main();
         b = new Board();
-        if(args.length == 0){
-//            b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-            b.setFEN("r3k2r/8/8/8/8/8/8/8");
-        b.isWhite = false;}
+        if(args.length == 0)
+            b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         else
             b.setFEN(args[0]);
         PApplet.runSketch(appArgs, mySketch);
