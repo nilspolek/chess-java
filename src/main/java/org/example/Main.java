@@ -29,21 +29,21 @@ public class Main extends PApplet {
     public void setup() {
         noStroke();
         //        Black Pieces
-        shapes[0] = loadShape("./pix/pieces/bB.svg");
-        shapes[1] = loadShape("./pix/pieces/bK.svg");
-        shapes[2] = loadShape("./pix/pieces/bN.svg");
-        shapes[3] = loadShape("./pix/pieces/bP.svg");
-        shapes[4] = loadShape("./pix/pieces/bQ.svg");
-        shapes[5] = loadShape("./pix/pieces/bR.svg");
+        shapes[0] = loadShape("./.app/pix/pieces/bB.svg");
+        shapes[1] = loadShape("./.app/pix/pieces/bK.svg");
+        shapes[2] = loadShape("./.app/pix/pieces/bN.svg");
+        shapes[3] = loadShape("./.app/pix/pieces/bP.svg");
+        shapes[4] = loadShape("./.app/pix/pieces/bQ.svg");
+        shapes[5] = loadShape("./.app/pix/pieces/bR.svg");
         //            White Pieces
-        shapes[6] = loadShape("./pix/pieces/wB.svg");
-        shapes[7] = loadShape("./pix/pieces/wK.svg");
-        shapes[8] = loadShape("./pix/pieces/wN.svg");
-        shapes[9] = loadShape("./pix/pieces/wP.svg");
-        shapes[10] = loadShape("./pix/pieces/wQ.svg");
-        shapes[11] = loadShape("./pix/pieces/wR.svg");
-        bg = loadImage("./pix/board.jpg");
-        selectedField = loadImage("./pix/isSelected.png");
+        shapes[6] = loadShape("./.app/pix/pieces/wB.svg");
+        shapes[7] = loadShape("./.app/pix/pieces/wK.svg");
+        shapes[8] = loadShape("./.app/pix/pieces/wN.svg");
+        shapes[9] = loadShape("./.app/pix/pieces/wP.svg");
+        shapes[10] = loadShape("./.app/pix/pieces/wQ.svg");
+        shapes[11] = loadShape("./.app/pix/pieces/wR.svg");
+        bg = loadImage("./.app/pix/board.jpg");
+        selectedField = loadImage("./.app/pix/isSelected.png");
     }
 
     public void mousePressed() {

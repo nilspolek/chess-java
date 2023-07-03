@@ -6,7 +6,7 @@ steps:
     image: maven:3.9.3-eclipse-temurin-20-alpine
     commands:
       - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-      - mvn test -B 
+      - mvn test -B
   - name: discord notification
     image: appleboy/drone-discord
     settings:
@@ -24,3 +24,13 @@ steps:
         Link: {{build.link}}
         
       username: Drone CI
+  - name: publish
+    image: plugins/github-release
+    commands:
+      - mkdir Schachprojekt
+      - cp ./target/SchachPrjekt2-1.0-SNAPSHOT-jar-with-dependencies.jar ./Schachprojekt/SchachPrjekt.jar
+      - cp ./src/main/resources/.app ./Schachprojekt/.app
+    settings:
+      api_key:
+        from_secret:  githubApi
+      files: Schachprojekt
