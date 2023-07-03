@@ -47,7 +47,7 @@ steps:
     when:
       event: tag
 
-  - name: discord notification
+  - name: discord notification release gh
     image: appleboy/drone-discord
     settings:
       webhook_id:
