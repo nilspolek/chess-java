@@ -34,3 +34,5 @@ steps:
       api_key:
         from_secret:  githubApi
       files: target
+    when:
+      event: tag
