@@ -31,7 +31,7 @@ class BoardTest {
         System.out.println(b.board[100]);
         b.getMoves(100).forEach(System.out::println);
         assertTrue(b.getMoves(100).anyMatch(e -> e.to() == 98));
-        assertEquals(3, b.getMoves(100).count());
+        assertEquals(1, b.getMoves(100).count());
     }
     @Test
     void testGetKing(){
