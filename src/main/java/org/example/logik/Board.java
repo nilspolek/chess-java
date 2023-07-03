@@ -1,6 +1,7 @@
 package org.example.logik;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -102,7 +103,7 @@ public class Board {
     }
 
     public Stream<Move> getMoves(int field) {
-        if(isWhite == (board[field] < 0)) return Stream.empty();
+        if (isWhite == (board[field] < 0)) return Stream.empty();
         Stream.Builder<Move> sb = Stream.builder();
         if (isControlled(getKing(board[field] < 0), board[field] > 0)) {
             int[] tempBoard = new int[board.length];
@@ -111,7 +112,7 @@ public class Board {
                 move(e, tempBoard);
                 if (!isControlled(getKing(board[field] < 0), board[field] > 0, tempBoard)) sb.add(e);
             });
-            return Stream.concat(sb.build(), kingMoves(getKing(board[field] < 0), board[field] > 0));
+            return Stream.concat(sb.build(), kingMoves(getKing(board[field] < 0), board[field] < 0));
         }
         return getMovesWithoutCheck(field);
     }
@@ -171,9 +172,18 @@ public class Board {
             case 5 -> {
                 return this.queenMoves(field, isBlack, board);
             }
-//            case 6 -> {
-//                return this.kingMoves(field, isBlack,board);
-//            }
+            case 6 -> {
+                Stream.Builder<Move> sb = Stream.builder();
+                if (board[field - 11] == 0) sb.add(new Move(field, field - 11, (board[field] > 0) ? -6 : 6));
+                if (board[field - 12] == 0) sb.add(new Move(field, field - 12, (board[field] > 0) ? -6 : 6));
+                if (board[field - 13] == 0) sb.add(new Move(field, field - 13, (board[field] > 0) ? -6 : 6));
+                if (board[field - 1] == 0) sb.add(new Move(field, field - 1, (board[field] > 0) ? -6 : 6));
+                if (board[field + 1] == 0) sb.add(new Move(field, field + 1, (board[field] > 0) ? -6 : 6));
+                if (board[field + 11] == 0) sb.add(new Move(field, field + 11, (board[field] > 0) ? -6 : 6));
+                if (board[field + 12] == 0) sb.add(new Move(field, field + 12, (board[field] > 0) ? -6 : 6));
+                if (board[field + 13] == 0) sb.add(new Move(field, field + 13, (board[field] > 0) ? -6 : 6));
+                return sb.build();
+            }
             default -> {
                 return Stream.empty();
             }
@@ -182,14 +192,22 @@ public class Board {
 
     Stream<Move> kingMoves(int i, boolean isBlack, int[] board) {
         Stream.Builder<Move> sb = Stream.builder();
-        if (isControlled(i - 11, !isBlack, board)) sb.add(new Move(i, i - 11, (isBlack) ? -6 : 6));
-        if (isControlled(i - 12, !isBlack, board)) sb.add(new Move(i, i - 12, (isBlack) ? -6 : 6));
-        if (isControlled(i - 13, !isBlack, board)) sb.add(new Move(i, i - 13, (isBlack) ? -6 : 6));
-        if (isControlled(i - 1, !isBlack, board)) sb.add(new Move(i, i - 1, (isBlack) ? -6 : 6));
-        if (isControlled(i + 1, !isBlack, board)) sb.add(new Move(i, i + 1, (isBlack) ? -6 : 6));
-        if (isControlled(i + 11, !isBlack, board)) sb.add(new Move(i, i + 11, (isBlack) ? -6 : 6));
-        if (isControlled(i + 12, !isBlack, board)) sb.add(new Move(i, i + 12, (isBlack) ? -6 : 6));
-        if (isControlled(i + 13, !isBlack, board)) sb.add(new Move(i, i + 13, (isBlack) ? -6 : 6));
+        if (!isControlled(i - 11, !isBlack, board) && ((isBlack) ? board[i - 11] >= 0 : board[i - 11] <= 0) && board[i - 11] != 9)
+            sb.add(new Move(i, i - 11, (isBlack) ? -6 : 6));
+        if (!isControlled(i - 12, !isBlack, board) && ((isBlack) ? board[i - 12] >= 0 : board[i - 12] <= 0) && board[i - 12] != 9)
+            sb.add(new Move(i, i - 12, (isBlack) ? -6 : 6));
+        if (!isControlled(i - 13, !isBlack, board) && ((isBlack) ? board[i - 13] >= 0 : board[i - 13] <= 0) && board[i - 13] != 9)
+            sb.add(new Move(i, i - 13, (isBlack) ? -6 : 6));
+        if (!isControlled(i - 1, !isBlack, board) && ((isBlack) ? board[i - 1] >= 0 : board[i - 1] <= 0) && board[i - 1] != 9)
+            sb.add(new Move(i, i - 1, (isBlack) ? -6 : 6));
+        if (!isControlled(i + 1, !isBlack, board) && ((isBlack) ? board[i + 1] >= 0 : board[i + 1] <= 0) && board[i + 1] != 9)
+            sb.add(new Move(i, i + 1, (isBlack) ? -6 : 6));
+        if (!isControlled(i + 11, !isBlack, board) && ((isBlack) ? board[i + 11] >= 0 : board[i + 11] <= 0) && board[i + 11] != 9)
+            sb.add(new Move(i, i + 11, (isBlack) ? -6 : 6));
+        if (!isControlled(i + 12, !isBlack, board) && ((isBlack) ? board[i + 12] >= 0 : board[i + 12] <= 0) && board[i + 12] != 9)
+            sb.add(new Move(i, i + 12, (isBlack) ? -6 : 6));
+        if (!isControlled(i + 13, !isBlack, board) && ((isBlack) ? board[i + 13] >= 0 : board[i + 13] <= 0) && board[i + 13] != 9)
+            sb.add(new Move(i, i + 13, (isBlack) ? -6 : 6));
         if (isBlack) {
             if (movedPices[0] && movedPices[1] && isControlled(27, false, board) && isControlled(28, false, board) && isControlled(29, false, board) && isControlled(30, false, board) && board[28] == 0 && board[29] == 0)
                 sb.add(new Move(i, 28, -6));
@@ -201,7 +219,7 @@ public class Board {
             if (movedPices[4] && movedPices[5] && isControlled(114, true, board) && isControlled(115, true, board) && isControlled(116, true, board) && board[115] == 0 && board[116] == 0)
                 sb.add(new Move(i, 116, 6));
         }
-        return Stream.empty();
+        return sb.build();
     }
 
     Stream<Move> kingMoves(int i, boolean isBlack) {
@@ -211,16 +229,16 @@ public class Board {
     Stream<Move> pawnMoves(int i, boolean isBlack, int[] board) {
         Stream.Builder<Move> sb = Stream.builder();
         if (isBlack) {
-            if(board[i+11] > 0) sb.add(new Move(i,i+11,-1));
-            if(board[i+13] > 0) sb.add(new Move(i,i+13,-1));
+            if (board[i + 11] > 0) sb.add(new Move(i, i + 11, -1));
+            if (board[i + 13] > 0) sb.add(new Move(i, i + 13, -1));
             if (board[i + 12] == 0) {
                 if (110 <= i && 118 >= i) sb.add(new Move(i, i + 12, -1));
                 else sb.add(new Move(i, i + 12, -1));
                 if (board[i + 24] == 0 && 38 <= i && 46 >= i) sb.add(new Move(i, i + 24, -1));
             }
         } else {
-            if(board[i-11] < 0) sb.add(new Move(i,i-11,1));
-            if(board[i-13] < 0) sb.add(new Move(i,i-13,1));
+            if (board[i - 11] < 0) sb.add(new Move(i, i - 11, 1));
+            if (board[i - 13] < 0) sb.add(new Move(i, i - 13, 1));
             if (board[i - 12] == 0) {
                 if (38 <= i && 46 >= i) sb.add(new Move(i, i - 12, +1));
                 else sb.add(new Move(i, i - 12, 1));
@@ -228,6 +246,14 @@ public class Board {
             }
         }
         return sb.build();
+    }
+
+    Stream<Move> getAllMoves() {
+        Stream<Move> s = Stream.of(new Move(1, 1, 1));
+        for (int i = 0; i < board.length; i++) {
+            s = Stream.concat(getMoves(i), s);
+        }
+        return s.filter(e -> e.from() != 1 && e.to() != 1 && e.pice() != 1).distinct();
     }
 
     Stream<Move> pawnMoves(int i, boolean isBlack) {
