@@ -10,7 +10,7 @@ steps:
       - mvn test -B
       - mvn clean package
       - mkdir Schachprojekt
-      - cp ./target/SchachPrjekt2-1.0-SNAPSHOT-jar-with-dependencies.jar ./Schachprojekt/SchachProjekt.jar
+      - cp ./target/SchachPrjekt2-1.0-jar-with-dependencies.jar ./Schachprojekt/SchachProjekt.jar
       - cp -r ./src/main/resources/.app ./Schachprojekt/.app
       - zip -r Schachprojekt.zip Schachprojekt
       - tar -czvf Schachprojekt.tar.gz Schachprojekt
