@@ -13,6 +13,10 @@ steps:
       - cp ./target/SchachPrjekt2-1.0-SNAPSHOT-jar-with-dependencies.jar ./Schachprojekt/SchachProjekt.jar
       - cp -r ./src/main/resources/.app ./Schachprojekt/.app
       - zip Schachprojekt Schachprojekt
+      - tar -czvf Schachprojekt.tar.gz Schachprojekt
+      - mkdir release
+      - mv Schachprojekt.zip ./release/Schachprojekt.zip
+      - mv Schachprojekt.tar.gz ./release/Schachprojekt.tar.gz
   - name: discord notification
     image: appleboy/drone-discord
     settings:
@@ -39,7 +43,7 @@ steps:
     settings:
       title: Schachprojekt
       api_key:
-        from_secret:  githubApi
-      files: Schachprojekt.zip
+        from_secret: githubApi
+      files: release/*
     when:
       event: tag
