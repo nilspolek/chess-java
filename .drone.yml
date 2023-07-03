@@ -40,6 +40,6 @@ steps:
       title: Schachprojekt
       api_key:
         from_secret:  githubApi
-      files: Schachprojekt
+      files: Schachprojekt.zip
     when:
       event: tag
