@@ -26,11 +26,11 @@ steps:
       username: Drone CI
   - name: publish
     image: plugins/github-release
-    commands:
-      - mkdir Schachprojekt
-      - cp ./target/SchachPrjekt2-1.0-SNAPSHOT-jar-with-dependencies.jar ./Schachprojekt/SchachPrjekt.jar
-      - cp ./src/main/resources/.app ./Schachprojekt/.app
+#    commands:
+#      - mkdir Schachprojekt
+#      - cp ./target/SchachPrjekt2-1.0-SNAPSHOT-jar-with-dependencies.jar ./Schachprojekt/SchachPrjekt.jar
+#      - cp ./src/main/resources/.app ./Schachprojekt/.app
     settings:
       api_key:
         from_secret:  githubApi
-      files: Schachprojekt
+      files: target
