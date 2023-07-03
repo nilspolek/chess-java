@@ -334,7 +334,7 @@ public class Board {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
         for (int i = 0; i < board.length; i++) {
             sb.append(board[i]);
             if ((i + 1) % 12 == 0) sb.append('\n');
