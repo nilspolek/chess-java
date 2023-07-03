@@ -12,7 +12,7 @@ steps:
       - mkdir Schachprojekt
       - cp ./target/SchachPrjekt2-1.0-SNAPSHOT-jar-with-dependencies.jar ./Schachprojekt/SchachProjekt.jar
       - cp -r ./src/main/resources/.app ./Schachprojekt/.app
-      - zip Schachprojekt Schachprojekt
+      - zip Schachprojekt.zip Schachprojekt
       - tar -czvf Schachprojekt.tar.gz Schachprojekt
       - mkdir release
       - mv Schachprojekt.zip ./release/Schachprojekt.zip
@@ -41,7 +41,6 @@ steps:
 #      - cp ./target/SchachPrjekt2-1.0-SNAPSHOT-jar-with-dependencies.jar ./Schachprojekt/SchachPrjekt.jar
 #      - cp ./src/main/resources/.app ./Schachprojekt/.app
     settings:
-      title: Schachprojekt
       api_key:
         from_secret: githubApi
       files: release/*
