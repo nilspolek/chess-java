@@ -32,11 +32,6 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.micycle1</groupId>
-            <artifactId>processing-core-4</artifactId>
-            <version>4.2</version>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
