@@ -10,7 +10,7 @@ steps:
       - mvn clean package
       - mkdir Schachprojekt
       - cp ./target/SchachPrjekt2-1.0-SNAPSHOT-jar-with-dependencies.jar ./Schachprojekt/SchachProjekt.jar
-      - cp ./src/main/resources/.app ./Schachprojekt/.app
+      - cp -r ./src/main/resources/.app ./Schachprojekt/.app
       - zip Schachprojekt Schachprojekt
   - name: discord notification
     image: appleboy/drone-discord
