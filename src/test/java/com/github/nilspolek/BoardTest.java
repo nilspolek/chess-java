@@ -7,6 +7,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
     @Test
+    void testUndoMoves(){
+        Board b = new Board();
+        b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        b.move(new Move(100,88,1));
+        b.move(new Move(38,50,-1));
+        b.history.forEach(e -> {
+            b.board = e;
+            System.out.println(b);
+        });
+        b.undoMove();
+        System.out.println(b);
+
+    }
+    @Test
     void testGetMovesWithoutCheckInkBoard(){
         Board b = new Board();
         b.setFEN("r7/8/8/8/8/8/R7/K5p1");
