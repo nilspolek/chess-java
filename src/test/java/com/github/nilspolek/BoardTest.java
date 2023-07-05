@@ -19,9 +19,9 @@ class BoardTest {
     void testIsCheckmate(){
         Board b = new Board();
         b.setFEN("k7/ppp5/8/8/8/8/8/4R2K");
-        assertFalse(b.isCheckMate());
+        assertFalse(b.isCheckMate() != 0);
         b.move(new Move(114,30,2));
-        assertTrue(b.isCheckMate());
+        assertTrue(b.isCheckMate() != 0);
     }
     @Test
     void undoMoves(){

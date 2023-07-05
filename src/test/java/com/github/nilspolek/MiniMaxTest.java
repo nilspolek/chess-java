@@ -10,10 +10,14 @@ class MiniMaxTest {
         System.out.println(b.findBestMove(true));
     }
     @Test
-    void findBestMoveTestEndgamePuzzle(){
+    void fiedMateIn2(){
         Board b = new Board();
-        b.setFEN("k7/ppp5/8/8/8/8/3r4/5R1K");
-        System.out.println(b.findBestMove(false));
+        b.setFEN("k7/ppp5/8/8/8/3r4/8/1K5R");
+        System.out.println(b.findBestMove(true));
+        Board c = new Board();
+        c.setFEN("3r3k/8/8/8/8/8/4RPPP/7K");
+        c.setWhite(false);
+        System.out.println(c.findBestMove(false));
     }
 
 }

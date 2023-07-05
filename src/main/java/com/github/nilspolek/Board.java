@@ -33,8 +33,14 @@ public class Board {
         }
         return sb.build().mapToInt(e -> e).toArray();
     }
+    public void setWhite(boolean isWhite){
+        this.isWhite = isWhite;
+        history.add(new SaveingPoint(board, isWhite, movedPices));
+    }
 
     public int evaluate() {
+        if(isCheckMate() == 1)return 1000;
+        if(isCheckMate() == -1)return -1000;
         int counter = 0;
         for (int i : board) {
             if (i == 9) continue;
@@ -45,7 +51,7 @@ public class Board {
 
 
     public Move findBestMove(boolean maximizingPlayer) {
-        int depth = 2;
+        int depth = 3;
         int bestValue = Integer.MIN_VALUE;
         Move bestMove = null;
         List<Move> bestMoves = new ArrayList<>();
@@ -76,7 +82,7 @@ public class Board {
 
 
     private int minimax(int depth, int alpha, int beta, boolean maximizingPlayer) {
-        if (depth == 0 || isCheckMate()) return evaluate();
+        if (depth == 0 || isCheckMate() != 0) return evaluate();
 
         if (maximizingPlayer) {
             int maxEval = Integer.MIN_VALUE;
@@ -216,17 +222,16 @@ public class Board {
 //        }
 //        return getMovesWithoutCheck(field).filter(e -> e.from() == field);
     }
-
-    public boolean isCheckMate() {
+    public int isCheckMate(){
         if (this.getAllMoves().noneMatch(e -> e.pice() < 0) && !isWhite) {
             System.out.println("White won");
-            return true;
+            return 1;
         }
         if (this.getAllMoves().noneMatch(e -> e.pice() > 0) && isWhite) {
             System.out.println("Black won");
-            return true;
+            return -1;
         }
-        return false;
+        return 0;
     }
 
     Stream<Move> getMovesWithoutCheckExcludingKing(int field) {
