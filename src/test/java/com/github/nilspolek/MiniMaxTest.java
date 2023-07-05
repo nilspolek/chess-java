@@ -21,10 +21,9 @@ class MiniMaxTest {
         Board c = new Board();
         c.setFEN("1k5r/8/3R4/8/8/8/PPP5/K7");
         c.setWhite(false);
-        Move m2 = c.findBestMove(true,false);
+        Move m2 = c.findBestMove(true,true);
         assertEquals(m2.to(),117);
         assertEquals(m2.from(),33);
-        System.out.println(c.findBestMove(true,true));
     }
     @Test
     void findMateIn1(){
