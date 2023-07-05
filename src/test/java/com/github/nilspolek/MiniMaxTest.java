@@ -9,7 +9,7 @@ class MiniMaxTest {
     void findBestMove(){
         Board b = new Board();
         b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-        b.findBestMove(b.board, 1,true);
+        System.out.println(b.findBestMove(b.board, 2,true));
     }
 
 }

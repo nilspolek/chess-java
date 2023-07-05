@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class Board {
+public class Board{
     // 1 = Bauer
     // 2 = Turm
     // 3 = Springer
@@ -16,6 +16,8 @@ public class Board {
     // Die werte in negativ sind schwarz
     public boolean isWhite = true;
     boolean[] movedPices = new boolean[]{false, false, false, false, false, false};
+    public int[] board = new int[144];
+    ArrayList<SaveingPoint> history = new ArrayList<>();
 
     public Board() {
         for (int i = 0; i < board.length; i++) {
@@ -63,8 +65,7 @@ public class Board {
     }
 
     private int minimax(int[] seed, int depth, int alpha, int beta, boolean maximizingPlayer) {
-        if (depth == 0 || isCheckMate())
-            return evaluate();
+        if (depth == 0 || isCheckMate()) return evaluate();
 
         if (maximizingPlayer) {
             int maxEval = Integer.MIN_VALUE;
@@ -74,8 +75,7 @@ public class Board {
                 undoMove();
                 maxEval = Math.max(maxEval, eval);
                 alpha = Math.max(alpha, eval);
-                if (beta <= alpha)
-                    break;
+                if (beta <= alpha) break;
             }
 
             return maxEval;
@@ -87,8 +87,7 @@ public class Board {
                 undoMove();
                 minEval = Math.min(minEval, eval);
                 beta = Math.min(beta, eval);
-                if (beta <= alpha)
-                    break;
+                if (beta <= alpha) break;
 
             }
 
@@ -97,9 +96,10 @@ public class Board {
     }
 
     public void undoMove() {
-        board = history.get(history.size() - 2);
         history.remove(history.size() - 1);
-        isWhite = !isWhite;
+        board = Arrays.copyOf(history.get(history.size() - 1).board(),board.length);
+        isWhite = history.get(history.size()-1).isWhite();
+        movedPices = Arrays.copyOf(history.get(history.size() - 1).movedPices(),movedPices.length);
     }
 
     public int getValue(int pice) {
@@ -125,9 +125,6 @@ public class Board {
         }
     }
 
-    public int[] board = new int[144];
-
-    ArrayList<int[]> history = new ArrayList<>();
 
     public Board setFEN(String FEN) {
         String[] rows = FEN.split("/");
@@ -152,7 +149,7 @@ public class Board {
                 }
             }
         }
-        history.add(Arrays.copyOf(board, board.length));
+        history.add(new SaveingPoint(board,isWhite,movedPices));
         return this;
     }
 
@@ -357,7 +354,10 @@ public class Board {
         for (int i = 0; i < board.length; i++) {
             s = Stream.concat(getMoves(i), s);
         }
-        return s.filter(e -> e.from() != 1 && e.to() != 1 && e.pice() != 1).distinct();
+        return s.filter(e -> {
+            if(e.from()==1 && e.to() == 1 && e.pice() == 1) return false;
+            return true;
+        }).distinct();
     }
 
     Stream<Move> pawnMoves(int i, boolean isBlack) {
@@ -455,7 +455,7 @@ public class Board {
 
     public boolean move(Move move) {
         if (isWhite == move.pice() < 0 || getMoves(move.from()).noneMatch(e -> e.to() == move.to())) {
-            System.out.println("Move not Possible"+ move);
+            System.out.println("Move not Possible" + move);
             return false;
         }
         if (move.from() == 26) movedPices[0] = true;
@@ -472,7 +472,7 @@ public class Board {
                 board[28] = -6;
                 isWhite = !isWhite;
                 isCheckMate();
-                history.add(Arrays.copyOf(board, board.length));
+                history.add(new SaveingPoint(Arrays.copyOf(board, board.length),isWhite,Arrays.copyOf(movedPices, movedPices.length)));
                 return true;
 
             } else if (move.to() == 32) {
@@ -482,7 +482,7 @@ public class Board {
                 board[32] = -6;
                 isWhite = !isWhite;
                 isCheckMate();
-                history.add(Arrays.copyOf(board, board.length));
+                history.add(new SaveingPoint(Arrays.copyOf(board, board.length),isWhite,Arrays.copyOf(movedPices, movedPices.length)));
                 return true;
             }
         }
@@ -494,7 +494,7 @@ public class Board {
                 board[112] = 6;
                 isWhite = !isWhite;
                 isCheckMate();
-                history.add(Arrays.copyOf(board, board.length));
+                history.add(new SaveingPoint(Arrays.copyOf(board, board.length),isWhite,Arrays.copyOf(movedPices, movedPices.length)));
                 return true;
 
             } else if (move.to() == 116) {
@@ -504,7 +504,7 @@ public class Board {
                 board[116] = 6;
                 isWhite = !isWhite;
                 isCheckMate();
-                history.add(Arrays.copyOf(board, board.length));
+                history.add(new SaveingPoint(Arrays.copyOf(board, board.length),isWhite,Arrays.copyOf(movedPices, movedPices.length)));
                 return true;
             }
         }
@@ -512,7 +512,7 @@ public class Board {
         board[move.to()] = move.pice();
         isWhite = !isWhite;
         isCheckMate();
-        history.add(Arrays.copyOf(board, board.length));
+        history.add(new SaveingPoint(Arrays.copyOf(board, board.length),isWhite,Arrays.copyOf(movedPices, movedPices.length)));
         return true;
     }
 }
