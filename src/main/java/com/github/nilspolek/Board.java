@@ -1,8 +1,6 @@
 package com.github.nilspolek;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -46,9 +44,12 @@ public class Board{
     }
 
 
-    public Move findBestMove(int[] seed, int depth, boolean maximizingPlayer) {
+    public Move findBestMove(boolean maximizingPlayer) {
+        int[] seed = board;
+        int depth = 2;
         int bestValue = Integer.MIN_VALUE;
         Move bestMove = null;
+        List<Move> bestMoves = new ArrayList<>();
 
         for (Move move : getAllMoves().toArray(Move[]::new)) {
             move(move);
@@ -58,11 +59,22 @@ public class Board{
             if (value > bestValue) {
                 bestValue = value;
                 bestMove = move;
+                bestMoves.clear();
+                bestMoves.add(move);
+            } else if (value == bestValue) {
+                bestMoves.add(move);
             }
+        }
+
+        // Wähle einen zufälligen Zug aus der Liste der besten Züge
+        if (!bestMoves.isEmpty()) {
+            int randomIndex = new Random().nextInt(bestMoves.size());
+            bestMove = bestMoves.get(randomIndex);
         }
 
         return bestMove;
     }
+
 
     private int minimax(int[] seed, int depth, int alpha, int beta, boolean maximizingPlayer) {
         if (depth == 0 || isCheckMate()) return evaluate();

@@ -10,6 +10,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
     @Test
+    void testEvaluate(){
+        Board b = new Board();
+        b.setFEN("k7/ppp5/8/8/8/8/3r4/5R1K");
+        System.out.println(b.evaluate());
+    }
+    @Test
+    void testIsCheckmate(){
+        Board b = new Board();
+        b.setFEN("k7/ppp5/8/8/8/8/8/4R2K");
+        assertFalse(b.isCheckMate());
+        b.move(new Move(114,30,2));
+        assertTrue(b.isCheckMate());
+    }
+    @Test
     void undoMoves(){
         Board b = new Board();
         b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");

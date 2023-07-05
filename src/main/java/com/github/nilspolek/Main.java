@@ -13,10 +13,13 @@ public class Main extends PApplet {
     PImage bg;
     PImage selectedField;
 
+    static boolean playBot;
+
     public static void main(String... args) {
         String[] appArgs = {"Chess"};
         Main mySketch = new Main();
         b = new Board();
+        playBot = false;
         if(args.length == 0)
             b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         else
@@ -51,8 +54,13 @@ public class Main extends PApplet {
     public void mousePressed() {
         int row = (int) (mouseY / 62.5);
         int col = (int) (mouseX / 62.5);
-        if(clickedPice != 25)
-            b.move(new Move(clickedPice,(row * 12) + 26 + col,b.board[clickedPice]));
+        if(b.board[row * 12 + 26 + col] < 0 && playBot)return;
+        if(clickedPice != 25){
+            if(b.move(new Move(clickedPice,(row * 12) + 26 + col,b.board[clickedPice])) && playBot) {
+                clickedPice = 0;
+                b.move(b.findBestMove(false));
+            }
+        }
         clickedPice = row * 12 + 26 + col;
     }
 
