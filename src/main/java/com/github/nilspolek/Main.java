@@ -1,7 +1,5 @@
 package com.github.nilspolek;
 
-import com.github.nilspolek.Board;
-import com.github.nilspolek.Move;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PShape;

@@ -2,7 +2,7 @@ package com.github.nilspolek;
 
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLOutput;
+
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -92,13 +92,6 @@ class BoardTest {
         for (Move move : b.getAllMoves().toArray(Move[]::new)) {
             b.move(move);
             b.undoMove();
-//            if(!Arrays.equals(test,b.getBoard())){
-//                Arrays.stream(test).forEach(System.out::print);
-//                System.out.println();
-//                Arrays.stream(b.getBoard()).forEach(System.out::print);
-//            }else
-//                assertTrue(Arrays.equals(test,b.getBoard()));
-//
         }
     }
 
