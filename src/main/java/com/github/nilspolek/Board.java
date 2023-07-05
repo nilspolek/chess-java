@@ -48,17 +48,19 @@ public class Board {
         }
         return counter;
     }
+    public Move findBestMove(boolean maximizingPlayer,boolean isBlack){
+        return findBestMove(maximizingPlayer,3,isBlack);
+    }
 
 
-    public Move findBestMove(boolean maximizingPlayer) {
-        int depth = 3;
+    public Move findBestMove(boolean maximizingPlayer,int depth,boolean isBlack) {
         int bestValue = Integer.MIN_VALUE;
         Move bestMove = null;
         List<Move> bestMoves = new ArrayList<>();
 
         for (Move move : getAllMoves().toArray(Move[]::new)) {
             move(move);
-            int value = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !maximizingPlayer);
+            int value = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !maximizingPlayer,isBlack);
             undoMove();
 
             if (value > bestValue) {
@@ -81,14 +83,14 @@ public class Board {
     }
 
 
-    private int minimax(int depth, int alpha, int beta, boolean maximizingPlayer) {
-        if (depth == 0 || isCheckMate() != 0) return evaluate();
+    private int minimax(int depth, int alpha, int beta, boolean maximizingPlayer,boolean isBlack) {
+        if (depth == 0 || isCheckMate() != 0) return (isBlack)?-evaluate():evaluate();
 
         if (maximizingPlayer) {
             int maxEval = Integer.MIN_VALUE;
             for (Move move : getAllMoves().toArray(Move[]::new)) {
                 move(move);
-                int eval = minimax(depth - 1, alpha, beta, false);
+                int eval = minimax(depth - 1, alpha, beta, false,isBlack);
                 undoMove();
                 maxEval = Math.max(maxEval, eval);
                 alpha = Math.max(alpha, eval);
@@ -100,7 +102,7 @@ public class Board {
             int minEval = Integer.MAX_VALUE;
             for (Move move : getAllMoves().toArray(Move[]::new)) {
                 move(move);
-                int eval = minimax(depth - 1, alpha, beta, true);
+                int eval = minimax(depth - 1, alpha, beta, true,isBlack);
                 undoMove();
                 minEval = Math.min(minEval, eval);
                 beta = Math.min(beta, eval);

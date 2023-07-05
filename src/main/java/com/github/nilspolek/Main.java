@@ -56,7 +56,7 @@ public class Main extends PApplet {
         if(clickedPice != 25){
             if(b.move(new Move(clickedPice,(row * 12) + 26 + col,b.board[clickedPice])) && playBot) {
                 clickedPice = 0;
-                b.move(b.findBestMove(false));
+                b.move(b.findBestMove(false,true));
             }
         }
         clickedPice = row * 12 + 26 + col;
