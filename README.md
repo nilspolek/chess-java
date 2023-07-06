@@ -1,5 +1,5 @@
 # Chess-java
-[![Build Status](https://drone.webnils.de/api/badges/nilspolek/SchachPrjekt2/status.svg)](https://drone.webnils.de/nilspolek/SchachPrjekt2)  [![](https://jitpack.io/v/nilspolek/SchachPrjekt2.svg)](https://jitpack.io/#nilspolek/SchachPrjekt2)  [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Build Status](https://drone.webnils.de/api/badges/nilspolek/SchachPrjekt2/status.svg)](https://drone.webnils.de/nilspolek/SchachPrjekt2)  [![](https://jitpack.io/v/nilspolek/chess-java.svg)](https://jitpack.io/#nilspolek/chess-java)  [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # Install
 ## Maven
@@ -14,7 +14,7 @@
 
 <dependency>
 	<groupId>com.github.nilspolek</groupId>
-	<artifactId>SchachPrjekt2</artifactId>
+	<artifactId>chess-java</artifactId>
 	<version>LATEST</version>
 </dependency>
 ```
@@ -26,6 +26,6 @@ allprojects {
 	}
 }
 dependencies {
-	implementation 'com.github.nilspolek:SchachPrjekt2:Tag'
+	implementation 'com.github.nilspolek:chess-java:Tag'
 }
 ```
