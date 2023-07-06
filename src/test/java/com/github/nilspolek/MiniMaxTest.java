@@ -11,7 +11,7 @@ class MiniMaxTest {
         b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         System.out.println(b.findBestMove(true,2,false));
     }
-/*    @Test
+    @Test
     void fiedMateIn2(){
         Board b = new Board();
         b.setFEN("k7/ppp5/8/8/8/3r4/8/1K5R");
@@ -24,7 +24,7 @@ class MiniMaxTest {
         Move m2 = c.findBestMove(true,true);
         assertEquals(m2.to(),117);
         assertEquals(m2.from(),33);
-    }*/
+    }
     @Test
     void findMateIn1(){
         Board b = new Board();

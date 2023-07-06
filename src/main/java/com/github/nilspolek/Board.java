@@ -1,5 +1,8 @@
 package com.github.nilspolek;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -33,14 +36,15 @@ public class Board {
         }
         return sb.build().mapToInt(e -> e).toArray();
     }
-    public void setWhite(boolean isWhite){
+
+    public void setWhite(boolean isWhite) {
         this.isWhite = isWhite;
         history.add(new SaveingPoint(board, isWhite, movedPices));
     }
 
     public int evaluate() {
-        if(isCheckMate() == 1)return 1000;
-        if(isCheckMate() == -1)return -1000;
+        if (isCheckMate() == 1) return 1000;
+        if (isCheckMate() == -1) return -1000;
         int counter = 0;
         for (int i : board) {
             if (i == 9) continue;
@@ -48,19 +52,20 @@ public class Board {
         }
         return counter;
     }
-    public Move findBestMove(boolean maximizingPlayer,boolean isBlack){
-        return findBestMove(maximizingPlayer,3,isBlack);
+
+    public Move findBestMove(boolean maximizingPlayer, boolean isBlack) {
+        return findBestMove(maximizingPlayer, 3, isBlack);
     }
 
 
-    public Move findBestMove(boolean maximizingPlayer,int depth,boolean isBlack) {
+    public Move findBestMove(boolean maximizingPlayer, int depth, boolean isBlack) {
         int bestValue = Integer.MIN_VALUE;
         Move bestMove = null;
         List<Move> bestMoves = new ArrayList<>();
 
         for (Move move : getAllMoves().toArray(Move[]::new)) {
             move(move);
-            int value = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !maximizingPlayer,isBlack);
+            int value = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !maximizingPlayer, isBlack);
             undoMove();
 
             if (value > bestValue) {
@@ -83,14 +88,14 @@ public class Board {
     }
 
 
-    private int minimax(int depth, int alpha, int beta, boolean maximizingPlayer,boolean isBlack) {
-        if (depth == 0 || isCheckMate() != 0) return (isBlack)?-evaluate():evaluate();
+    private int minimax(int depth, int alpha, int beta, boolean maximizingPlayer, boolean isBlack) {
+        if (depth == 0 || isCheckMate() != 0) return (isBlack) ? -evaluate() : evaluate();
 
         if (maximizingPlayer) {
             int maxEval = Integer.MIN_VALUE;
             for (Move move : getAllMoves().toArray(Move[]::new)) {
                 move(move);
-                int eval = minimax(depth - 1, alpha, beta, false,isBlack);
+                int eval = minimax(depth - 1, alpha, beta, false, isBlack);
                 undoMove();
                 maxEval = Math.max(maxEval, eval);
                 alpha = Math.max(alpha, eval);
@@ -102,7 +107,7 @@ public class Board {
             int minEval = Integer.MAX_VALUE;
             for (Move move : getAllMoves().toArray(Move[]::new)) {
                 move(move);
-                int eval = minimax(depth - 1, alpha, beta, true,isBlack);
+                int eval = minimax(depth - 1, alpha, beta, true, isBlack);
                 undoMove();
                 minEval = Math.min(minEval, eval);
                 beta = Math.min(beta, eval);
@@ -224,7 +229,8 @@ public class Board {
 //        }
 //        return getMovesWithoutCheck(field).filter(e -> e.from() == field);
     }
-    public int isCheckMate(){
+
+    public int isCheckMate() {
         if (this.getAllMoves().noneMatch(e -> e.pice() < 0) && !isWhite) {
             System.out.println("White won");
             return 1;

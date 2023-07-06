@@ -17,7 +17,7 @@ public class Main extends PApplet {
         String[] appArgs = {"Chess"};
         Main mySketch = new Main();
         b = new Board();
-        playBot = false;
+        playBot = true;
         if(args.length == 0)
             b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         else
@@ -56,7 +56,7 @@ public class Main extends PApplet {
         if(clickedPice != 25){
             if(b.move(new Move(clickedPice,(row * 12) + 26 + col,b.board[clickedPice])) && playBot) {
                 clickedPice = 0;
-                b.move(b.findBestMove(false,true));
+                b.move(b.findBestMove(false,1,true));
             }
         }
         clickedPice = row * 12 + 26 + col;
