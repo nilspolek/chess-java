@@ -9,7 +9,7 @@ steps:
       - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       - mvn clean package
       - mkdir Schachprojekt
-      - cp ./target/SchachPrjekt2-1.0-jar-with-dependencies.jar ./Schachprojekt/SchachProjekt.jar
+      - cp ./target/chess-java-1.0-jar-with-dependencies.jar ./Schachprojekt/chess-java.jar
   - name: discord notification
     image: appleboy/drone-discord
     settings:
