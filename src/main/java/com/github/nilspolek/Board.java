@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class Board {
+public class Board implements Chessable {
     // 1 = Bauer
     // 2 = Turm
     // 3 = Springer
@@ -32,7 +32,7 @@ public class Board {
         }
     }
 
-    public int[] getBoard(int[] board) {
+    int[] getBoard(int[] board) {
         Stream.Builder<Integer> sb = Stream.builder();
         for (int i : board) if (i != 9) sb.add(i);
         return sb.build().mapToInt(e -> e).toArray();
@@ -93,11 +93,12 @@ public class Board {
         return counter;
     }
 
-    public Move findBestMove(boolean maximizingPlayer, boolean isBlack) {
-        return findBestMove(maximizingPlayer, 3, isBlack);
+    public Move findBestMove(boolean isBlack) {
+        return findBestMove(3, isBlack);
     }
 
-    public Move findBestMove(boolean maximizingPlayer, int depth, boolean isBlack) {
+    public Move findBestMove(int depth, boolean isBlack) {
+        boolean maximizingPlayer = true;
         int bestValue = Integer.MIN_VALUE;
         Move bestMove = null;
         List<Move> bestMoves = new ArrayList<>();
@@ -311,7 +312,7 @@ public class Board {
         return 'X';
     }
 
-    boolean isControlled(int field, boolean byBlack) {
+    public boolean isControlled(int field, boolean byBlack) {
         return isControlled(field, byBlack, board);
     }
 
@@ -339,10 +340,12 @@ public class Board {
 
     public int isCheckMate() {
         if (this.getAllMoves().noneMatch(e -> e.pice() < 0) && !isWhite) {
+            if(!isControlled(getKing(true),false)) return 2;
             System.out.println("White won");
             return 1;
         }
         if (this.getAllMoves().noneMatch(e -> e.pice() > 0) && isWhite) {
+            if(!isControlled(getKing(false),true)) return -2;
             System.out.println("Black won");
             return -1;
         }
@@ -454,7 +457,7 @@ public class Board {
         return sb.build();
     }
 
-    Stream<Move> kingMoves(int i, boolean isBlack) {
+    public Stream<Move> kingMoves(int i, boolean isBlack) {
         return kingMoves(i, isBlack, board);
     }
 
@@ -480,7 +483,7 @@ public class Board {
         return sb.build();
     }
 
-    Stream<Move> getAllMoves() {
+    public Stream<Move> getAllMoves() {
         Stream<Move> s = Stream.of(new Move(1, 1, 1));
         for (int i = 0; i < board.length; i++) {
             s = Stream.concat(getMoves(i), s);
@@ -490,11 +493,11 @@ public class Board {
         }).distinct();
     }
 
-    Stream<Move> pawnMoves(int i, boolean isBlack) {
+    public Stream<Move> pawnMoves(int i, boolean isBlack) {
         return pawnMoves(i, isBlack, board);
     }
 
-    Stream<Move> bishopMoves(int i, boolean isBlack) {
+    public Stream<Move> bishopMoves(int i, boolean isBlack) {
         return bishopMoves(i, isBlack, board);
     }
 
@@ -506,7 +509,7 @@ public class Board {
         return Stream.concat(Stream.concat(Stream.concat(getLineFields(i, 1, isBlack, board[i], board), getLineFields(i, -1, isBlack, board[i], board)), getLineFields(i, -12, isBlack, board[i], board)), getLineFields(i, 12, isBlack, board[i], board));
     }
 
-    Stream<Move> rookMoves(int i, boolean isBlack) {
+    public Stream<Move> rookMoves(int i, boolean isBlack) {
         return rookMoves(i, isBlack, board);
     }
 
@@ -514,7 +517,7 @@ public class Board {
         return Stream.concat(bishopMoves(i, isBlack, board), rookMoves(i, isBlack, board));
     }
 
-    Stream<Move> queenMoves(int i, boolean isBlack) {
+    public Stream<Move> queenMoves(int i, boolean isBlack) {
         return queenMoves(i, isBlack, board);
     }
 
@@ -534,14 +537,14 @@ public class Board {
         return getLineFields(start, position, isBlack, pice, board);
     }
 
-    int getKing(boolean isBlack) {
+    public int getKing(boolean isBlack) {
         for (int i = 0; i < board.length; i++) {
             if ((isBlack) ? board[i] == -6 : board[i] == 6) return i;
         }
         return 0;
     }
 
-    Stream<Move> ponyMoves(int i, boolean isBlack) {
+    public Stream<Move> ponyMoves(int i, boolean isBlack) {
         return ponyMoves(i, isBlack, board);
     }
 
@@ -570,7 +573,7 @@ public class Board {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < board.length; i++) {
-            sb.append(board[i]);
+            if(board[i]!=9) sb.append(board[i]);
             if ((i + 1) % 12 == 0) sb.append('\n');
         }
         return sb.toString();
