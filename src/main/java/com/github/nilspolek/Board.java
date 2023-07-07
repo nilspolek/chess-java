@@ -21,7 +21,7 @@ public class Board implements Chessable {
     public boolean isWhite = true;
     boolean[] movedPices = new boolean[]{false, false, false, false, false, false};
     public int[] board = new int[144];
-    ArrayList<SaveingPoint> history = new ArrayList<>();
+    List<SaveingPoint> history = new LinkedList<>();
 
     public Board() {
         for (int i = 0; i < board.length; i++) {
@@ -33,9 +33,9 @@ public class Board implements Chessable {
     }
 
     int[] getBoard(int[] board) {
-        Stream.Builder<Integer> sb = Stream.builder();
-        for (int i : board) if (i != 9) sb.add(i);
-        return sb.build().mapToInt(e -> e).toArray();
+        ArrayList<Integer> ib = new ArrayList<>();
+        for (int i : board) if (i != 9) ib.add(i);
+        return ib.stream().mapToInt(Integer::intValue).toArray();
     }
 
     public int[] getBoard() {
@@ -185,6 +185,7 @@ public class Board implements Chessable {
     }
 
     public String getFEN() {
+        if(history.size() == 0) return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         return getFEN(history.get(history.size() - 1));
     }
 
@@ -424,24 +425,32 @@ public class Board implements Chessable {
             }
         }
     }
+    boolean isControlledAfterCapture(int i,boolean byBlack,int[] board){
+        if(isControlled(i,byBlack,board) && ((byBlack)?i<1:i>-1)) return true;
+        if(isControlled(i,byBlack,board)) return true;
+        int[] temp = Arrays.copyOf(board,board.length);
+        temp[i] = 0;
+        if(isControlled(i,byBlack,temp)) return true;
+        return false;
+    }
 
     Stream<Move> kingMoves(int i, boolean isBlack, int[] board) {
         Stream.Builder<Move> sb = Stream.builder();
-        if (!isControlled(i - 11, !isBlack, board) && ((isBlack) ? board[i - 11] >= 0 : board[i - 11] <= 0) && board[i - 11] != 9)
+        if (!isControlledAfterCapture(i - 11, !isBlack, board) && ((isBlack) ? board[i - 11] >= 0 : board[i - 11] <= 0) && board[i - 11] != 9)
             sb.add(new Move(i, i - 11, (isBlack) ? -6 : 6));
-        if (!isControlled(i - 12, !isBlack, board) && ((isBlack) ? board[i - 12] >= 0 : board[i - 12] <= 0) && board[i - 12] != 9)
+        if (!isControlledAfterCapture(i - 12, !isBlack, board) && ((isBlack) ? board[i - 12] >= 0 : board[i - 12] <= 0) && board[i - 12] != 9)
             sb.add(new Move(i, i - 12, (isBlack) ? -6 : 6));
-        if (!isControlled(i - 13, !isBlack, board) && ((isBlack) ? board[i - 13] >= 0 : board[i - 13] <= 0) && board[i - 13] != 9)
+        if (!isControlledAfterCapture(i - 13, !isBlack, board) && ((isBlack) ? board[i - 13] >= 0 : board[i - 13] <= 0) && board[i - 13] != 9)
             sb.add(new Move(i, i - 13, (isBlack) ? -6 : 6));
-        if (!isControlled(i - 1, !isBlack, board) && ((isBlack) ? board[i - 1] >= 0 : board[i - 1] <= 0) && board[i - 1] != 9)
+        if (!isControlledAfterCapture(i - 1, !isBlack, board) && ((isBlack) ? board[i - 1] >= 0 : board[i - 1] <= 0) && board[i - 1] != 9)
             sb.add(new Move(i, i - 1, (isBlack) ? -6 : 6));
-        if (!isControlled(i + 1, !isBlack, board) && ((isBlack) ? board[i + 1] >= 0 : board[i + 1] <= 0) && board[i + 1] != 9)
+        if (!isControlledAfterCapture(i + 1, !isBlack, board) && ((isBlack) ? board[i + 1] >= 0 : board[i + 1] <= 0) && board[i + 1] != 9)
             sb.add(new Move(i, i + 1, (isBlack) ? -6 : 6));
-        if (!isControlled(i + 11, !isBlack, board) && ((isBlack) ? board[i + 11] >= 0 : board[i + 11] <= 0) && board[i + 11] != 9)
+        if (!isControlledAfterCapture(i + 11, !isBlack, board) && ((isBlack) ? board[i + 11] >= 0 : board[i + 11] <= 0) && board[i + 11] != 9)
             sb.add(new Move(i, i + 11, (isBlack) ? -6 : 6));
-        if (!isControlled(i + 12, !isBlack, board) && ((isBlack) ? board[i + 12] >= 0 : board[i + 12] <= 0) && board[i + 12] != 9)
+        if (!isControlledAfterCapture(i + 12, !isBlack, board) && ((isBlack) ? board[i + 12] >= 0 : board[i + 12] <= 0) && board[i + 12] != 9)
             sb.add(new Move(i, i + 12, (isBlack) ? -6 : 6));
-        if (!isControlled(i + 13, !isBlack, board) && ((isBlack) ? board[i + 13] >= 0 : board[i + 13] <= 0) && board[i + 13] != 9)
+        if (!isControlledAfterCapture(i + 13, !isBlack, board) && ((isBlack) ? board[i + 13] >= 0 : board[i + 13] <= 0) && board[i + 13] != 9)
             sb.add(new Move(i, i + 13, (isBlack) ? -6 : 6));
         if (isBlack) {
             if (!movedPices[0] && !movedPices[1] && !isControlled(27, false, board) && !isControlled(28, false, board) && !isControlled(29, false, board) && !isControlled(30, false, board) && board[28] == 0 && board[29] == 0)
@@ -464,16 +473,16 @@ public class Board implements Chessable {
     Stream<Move> pawnMoves(int i, boolean isBlack, int[] board) {
         Stream.Builder<Move> sb = Stream.builder();
         if (isBlack) {
-            if (board[i + 11] > 0) sb.add(new Move(i, i + 11, -1));
-            if (board[i + 13] > 0) sb.add(new Move(i, i + 13, -1));
+            if (board[i + 11] > 0 && board[i+11] != 9) sb.add(new Move(i, i + 11, -1));
+            if (board[i + 13] > 0  && board[i+13] != 9) sb.add(new Move(i, i + 13, -1));
             if (board[i + 12] == 0) {
                 if (110 <= i && 118 >= i) sb.add(new Move(i, i + 12, -1));
                 else sb.add(new Move(i, i + 12, -1));
                 if (board[i + 24] == 0 && 38 <= i && 46 >= i) sb.add(new Move(i, i + 24, -1));
             }
         } else {
-            if (board[i - 11] < 0) sb.add(new Move(i, i - 11, 1));
-            if (board[i - 13] < 0) sb.add(new Move(i, i - 13, 1));
+            if (board[i - 11] < 0  && board[i-11] != 9) sb.add(new Move(i, i - 11, 1));
+            if (board[i - 13] < 0  && board[i-13] != 9) sb.add(new Move(i, i - 13, 1));
             if (board[i - 12] == 0) {
                 if (38 <= i && 46 >= i) sb.add(new Move(i, i - 12, +1));
                 else sb.add(new Move(i, i - 12, 1));

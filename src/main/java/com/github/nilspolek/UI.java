@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class UI extends PApplet {
+    boolean botThinks = false;
+    boolean playBot = true;
+    int clickedPice = 0;
     Board board;
     String fileSelected;
     PImage bg;
@@ -24,8 +27,9 @@ public class UI extends PApplet {
         String[] appArgs = {"Chess"};
         UI mySketch = new UI();
         Board b = new Board();
-//        b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-//        b.move(new Move(100,88,1));
+
+        b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        b.move(new Move(100, 88, 1));
         b.saveGame("./test.json");
         b.loadGame("./test.json");
         System.out.println(b.getFEN());
@@ -38,12 +42,27 @@ public class UI extends PApplet {
         switch (currentPage) {
             case 1 -> landingPage();
             case 2 -> loadGame();
+            case 3 -> board();
         }
     }
 
     public void mousePressed() {
-
+        if (board != null) {
+            int row = (int) (mouseY / 62.5);
+            int col = (int) (mouseX / 62.5);
+            if (!botThinks && board.move(new Move(clickedPice, (row * 12) + 26 + col, board.board[clickedPice])) && playBot) {
+                thread("findBestMove");
+            }
+            clickedPice = row * 12 + 26 + col;
+        }
     }
+
+    public void findBestMove() {
+        botThinks = true;
+        board.move(board.findBestMove(2, true));
+        botThinks = false;
+    }
+
 
     public void settings() {
         size(500, 500);
@@ -79,18 +98,38 @@ public class UI extends PApplet {
             if (mouseY > 250) {
                 System.out.println("{test3}");
             } else if (mouseY > 125) {
-                System.out.println("test2");
+                currentPage = 3;
             } else if (mouseY < 125) {
                 currentPage = 2;
                 System.out.println("Test1");
             }
         }
     }
+
     private void board() {
-        image(bg,0,0);
-        if(board == null) {
+        image(bg, 0, 0, 500, 500);
+        if (board == null) {
             board = new Board();
+            board.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         }
+        for (int i = 0; i < board.getBoard().length; i++) {
+            switch (board.getBoard()[i]) {
+                case 1 -> shape(shapes[9], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case 2 -> shape(shapes[11], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case 3 -> shape(shapes[8], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case 4 -> shape(shapes[6], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case 5 -> shape(shapes[10], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case 6 -> shape(shapes[7], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case -1 -> shape(shapes[3], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case -2 -> shape(shapes[5], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case -3 -> shape(shapes[2], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case -4 -> shape(shapes[0], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case -5 -> shape(shapes[4], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+                case -6 -> shape(shapes[1], (float) ((i % 8) * 62.5), (float) ((i / 8) * 62.5), 62.5F, 62.5F);
+            }
+        }
+        if (clickedPice > 25 && clickedPice < 118)
+            board.getMoves(clickedPice).forEach(e -> image(selectedField, (float) (((e.to() - 2) % 12) * 62.5) + 10, (float) (((e.to() - 26) / 12) * 62.5) + 10, 42.5F, 42.5F));
     }
 
     private void loadGame() {
