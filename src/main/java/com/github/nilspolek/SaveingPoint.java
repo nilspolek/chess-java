@@ -8,4 +8,9 @@ public record SaveingPoint(int[] board, boolean isWhite, boolean[] movedPices) {
         this.isWhite = isWhite;
         this.movedPices = Arrays.copyOf(movedPices,movedPices.length);
     }
+
+    @Override
+    public String toString() {
+        return "&\"board\":"+Arrays.toString(board)+"|\"isWhit\":"+isWhite+"|\"movedPices\":"+Arrays.toString(movedPices);
+    }
 }

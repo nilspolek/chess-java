@@ -10,14 +10,13 @@ public class Main extends PApplet {
     PShape[] shapes = new PShape[12];
     PImage bg;
     PImage selectedField;
-
     static boolean playBot;
 
     public static void main(String... args) {
         String[] appArgs = {"Chess"};
         Main mySketch = new Main();
         b = new Board();
-        playBot = true;
+        playBot = false;
         if(args.length == 0)
             b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         else

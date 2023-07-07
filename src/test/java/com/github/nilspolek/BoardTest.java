@@ -10,6 +10,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
     @Test
+    void testSetFEN2(){
+        Board b = new Board();
+        b.setFEN("8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50");
+        System.out.println(b.getFEN());
+    }
+    @Test
+    void testGetBoard(){
+        Board b = new Board();
+        System.out.println(b.getBoard().length);
+    }
+    @Test
+    void testGetFEN(){
+        Board b = new Board();
+        b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        System.out.println(b.getFEN());
+    }
+    @Test
     void testEvaluate(){
         Board b = new Board();
         b.setFEN("k7/ppp5/8/8/8/8/3r4/5R1K");

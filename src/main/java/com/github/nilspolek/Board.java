@@ -1,8 +1,11 @@
 package com.github.nilspolek;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import processing.data.JSONObject;
+
+import java.io.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -29,12 +32,49 @@ public class Board {
         }
     }
 
-    public int[] getBoard() {
+    public int[] getBoard(int[] board) {
         Stream.Builder<Integer> sb = Stream.builder();
-        for (int i : board) {
-            if (i != 9) sb.add(i);
-        }
+        for (int i : board) if (i != 9) sb.add(i);
         return sb.build().mapToInt(e -> e).toArray();
+    }
+
+    public int[] getBoard() {
+        return getBoard(board);
+    }
+
+    public void saveGame(String path) {
+        StringBuilder sb = new StringBuilder();
+        for (SaveingPoint s : history) sb.append(getFEN(s)).append('\n');
+        try {
+            File myObj = new File(path);
+            if (myObj.createNewFile()) {
+                System.out.println("File created: " + myObj.getName());
+                FileWriter myWriter = new FileWriter(path);
+                myWriter.write(sb.toString());
+                myWriter.close();
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public void loadGame(String path) {
+        try {
+            File myObj = new File(path);
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                this.setFEN(data);
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
 
     public void setWhite(boolean isWhite) {
@@ -57,17 +97,14 @@ public class Board {
         return findBestMove(maximizingPlayer, 3, isBlack);
     }
 
-
     public Move findBestMove(boolean maximizingPlayer, int depth, boolean isBlack) {
         int bestValue = Integer.MIN_VALUE;
         Move bestMove = null;
         List<Move> bestMoves = new ArrayList<>();
-
         for (Move move : getAllMoves().toArray(Move[]::new)) {
             move(move);
             int value = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !maximizingPlayer, isBlack);
             undoMove();
-
             if (value > bestValue) {
                 bestValue = value;
                 bestMove = move;
@@ -77,13 +114,10 @@ public class Board {
                 bestMoves.add(move);
             }
         }
-
-        // Wähle einen zufälligen Zug aus der Liste der besten Züge
         if (!bestMoves.isEmpty()) {
             int randomIndex = new Random().nextInt(bestMoves.size());
             bestMove = bestMoves.get(randomIndex);
         }
-
         return bestMove;
     }
 
@@ -149,8 +183,80 @@ public class Board {
         }
     }
 
+    public String getFEN() {
+        return getFEN(history.get(history.size() - 1));
+    }
+
+    public String getFEN(SaveingPoint saveingPoint) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int counter = 0;
+        int[] tempBoard = getBoard(saveingPoint.board());
+        for (int i = 0; i < tempBoard.length; i++) {
+            if (tempBoard[i] != 0 && counter != 0) {
+                stringBuilder.append(counter);
+                counter = 0;
+            } else if (0 == tempBoard[i]) {
+                counter++;
+            } else {
+                stringBuilder.append(getPiceFromPice(tempBoard[i]));
+            }
+            if ((i + 1) % 8 == 0) {
+                if (counter != 0) {
+                    stringBuilder.append(counter);
+                    counter = 0;
+                }
+                stringBuilder.append('/');
+            }
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        stringBuilder.append((saveingPoint.isWhite()) ? " w " : " b ");
+        if (!saveingPoint.movedPices()[4]) {
+            if (!saveingPoint.movedPices()[3]) stringBuilder.append('Q');
+            if (!saveingPoint.movedPices()[5]) stringBuilder.append('K');
+        }
+        if (!saveingPoint.movedPices()[1]) {
+            if (!saveingPoint.movedPices()[0]) stringBuilder.append('q');
+            if (!saveingPoint.movedPices()[2]) stringBuilder.append('k');
+        }
+        if (stringBuilder.charAt(stringBuilder.length() - 1) == ' ') stringBuilder.append("-");
+        if (stringBuilder.charAt(stringBuilder.length() - 1) == ' ') stringBuilder.append("-");
+        stringBuilder.append(" - ");
+        stringBuilder.append(history.size() / 2);
+        stringBuilder.append(" ").append(history.size());
+        return stringBuilder.toString();
+    }
+
 
     public Board setFEN(String FEN) {
+        if (FEN.split(" ").length > 2) {
+            isWhite = FEN.split(" ")[1].equals('w');
+            if (!FEN.split(" ")[2].equals('-')) {
+                String movedpicesString = FEN.split(" ")[2];
+                movedPices[0] = true;
+                movedPices[1] = true;
+                movedPices[2] = true;
+                movedPices[3] = true;
+                movedPices[4] = true;
+                movedPices[5] = true;
+                if (movedpicesString.indexOf('Q') != -1) {
+                    movedPices[4] = false;
+                    movedPices[3] = false;
+                }
+                if (movedpicesString.indexOf('K') != -1) {
+                    movedPices[4] = false;
+                    movedPices[5] = false;
+                }
+                if (movedpicesString.indexOf('q') != -1) {
+                    movedPices[0] = false;
+                    movedPices[1] = false;
+                }
+                if (movedpicesString.indexOf('k') != -1) {
+                    movedPices[1] = false;
+                    movedPices[2] = false;
+                }
+            }
+        }
+        FEN = FEN.split(" ")[0];
         String[] rows = FEN.split("/");
         int counter;
         int pice = 0;
@@ -178,24 +284,28 @@ public class Board {
     }
 
     public char getPice(int i) {
-        switch (Math.abs(board[i])) {
+        return getPiceFromPice(board[i]);
+    }
+
+    public char getPiceFromPice(int i) {
+        switch (Math.abs(i)) {
             case 1 -> {
-                return (board[i] > 0) ? 'P' : 'p';
+                return (i > 0) ? 'P' : 'p';
             }
             case 2 -> {
-                return (board[i] > 0) ? 'R' : 'r';
+                return (i > 0) ? 'R' : 'r';
             }
             case 3 -> {
-                return (board[i] > 0) ? 'N' : 'n';
+                return (i > 0) ? 'N' : 'n';
             }
             case 4 -> {
-                return (board[i] > 0) ? 'B' : 'b';
+                return (i > 0) ? 'B' : 'b';
             }
             case 5 -> {
-                return (board[i] > 0) ? 'D' : 'd';
+                return (i > 0) ? 'Q' : 'q';
             }
             case 6 -> {
-                return (board[i] > 0) ? 'K' : 'k';
+                return (i > 0) ? 'K' : 'k';
             }
         }
         return 'X';
@@ -218,7 +328,6 @@ public class Board {
     public Stream<Move> getMoves(int field) {
         if (isWhite == (board[field] < 0)) return Stream.empty();
         Stream.Builder<Move> sb = Stream.builder();
-//        if (isControlled(getKing(board[field] < 0), board[field] > 0)) {
         int[] tempBoard = new int[board.length];
         getMovesWithoutCheck(field).forEach(e -> {
             System.arraycopy(board, 0, tempBoard, 0, board.length);
@@ -226,8 +335,6 @@ public class Board {
             if (!isControlled(getKing(board[field] < 0), board[field] > 0, tempBoard)) sb.add(e);
         });
         return Stream.concat(sb.build(), kingMoves(getKing(board[field] < 0), board[field] < 0)).filter(e -> e.from() == field).distinct();
-//        }
-//        return getMovesWithoutCheck(field).filter(e -> e.from() == field);
     }
 
     public int isCheckMate() {
