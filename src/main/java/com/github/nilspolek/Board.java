@@ -231,6 +231,7 @@ public class Board implements Chessable {
 
 
     public Board setFEN(String FEN) {
+        for (int i = 0; i < board.length; i++) if(board[i] != 9)board[i] = 0;
         if (FEN.split(" ").length > 2) {
             isWhite = FEN.split(" ")[1].equals('w');
             if (!FEN.split(" ")[2].equals('-')) {

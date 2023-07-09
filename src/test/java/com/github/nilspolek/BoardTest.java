@@ -12,7 +12,7 @@ class BoardTest {
     @Test
     void testSetFEN2(){
         Board b = new Board();
-        b.setFEN("8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50");
+        b.setFEN("rnbqkbnr/pppp2pp/8/4pp2/4PP2/8/PPPP2PP/RNBQKBNR");
         System.out.println(b.getFEN());
     }
     @Test
