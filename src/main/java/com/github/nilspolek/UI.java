@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.Random;
 
 public class UI extends PApplet {
+    boolean save = false;
     boolean playerIsWhite;
     boolean botThinks = false;
     boolean playBot = true;
@@ -47,6 +48,12 @@ public class UI extends PApplet {
             case 2 -> loadGame();
             case 3 -> playBot();
             case 4 -> duell();
+        }
+    }
+    public void keyPressed(){
+        if(board != null && (keyCode == 's' || keyCode == 'S')) {
+            save = true;
+            selectOutput("Select a file to write to:", "fileSelected");
         }
     }
 
@@ -110,7 +117,6 @@ public class UI extends PApplet {
     }
     private void duell(){
         playBot = false;
-
         board();
     }
 
@@ -164,10 +170,14 @@ public class UI extends PApplet {
         if (selection == null) {
             println("Window was closed or the user hit cancel.");
         } else {
-            board = new Board();
-            board.loadGame(selection.getAbsolutePath());
-            currentPage = 3;
-            println("User selected " + selection.getAbsolutePath());
+            if(save){
+                board.saveGame(selection.getAbsolutePath());
+                exit();
+            }else {
+                board = new Board();
+                board.loadGame(selection.getAbsolutePath());
+                currentPage = 3;
+            };
         }
     }
 }

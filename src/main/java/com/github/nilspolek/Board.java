@@ -196,6 +196,7 @@ public class Board implements Chessable {
         for (int i = 0; i < tempBoard.length; i++) {
             if (tempBoard[i] != 0 && counter != 0) {
                 stringBuilder.append(counter);
+                stringBuilder.append(getPiceFromPice(tempBoard[i]));
                 counter = 0;
             } else if (0 == tempBoard[i]) {
                 counter++;
