@@ -5,9 +5,10 @@ import processing.core.PImage;
 import processing.core.PShape;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Random;
 
 public class UI extends PApplet {
+    boolean playerIsWhite;
     boolean botThinks = false;
     boolean playBot = true;
     int clickedPice = 0;
@@ -18,6 +19,8 @@ public class UI extends PApplet {
     PShape[] shapes = new PShape[12];
     int currentPage = 1;
     boolean fileSelectedbol = false;
+
+    boolean isWhite;
 
     //1 = landing page
     //2 = Load Game
@@ -42,7 +45,8 @@ public class UI extends PApplet {
         switch (currentPage) {
             case 1 -> landingPage();
             case 2 -> loadGame();
-            case 3 -> board();
+            case 3 -> playBot();
+            case 4 -> duell();
         }
     }
 
@@ -59,7 +63,7 @@ public class UI extends PApplet {
 
     public void findBestMove() {
         botThinks = true;
-        board.move(board.findBestMove(2, true));
+        board.move(board.findBestMove(1, playerIsWhite));
         botThinks = false;
     }
 
@@ -93,17 +97,33 @@ public class UI extends PApplet {
         textSize(50);
         text("Load game", 126, 125);
         text("Play Against Bot", 67, 250);
-        text("Play Tournament", 60, 375);
+        text("Play Duel", 144, 375);
         if (mousePressed && currentPage == 1) {
             if (mouseY > 250) {
-                System.out.println("{test3}");
+                currentPage = 4;
             } else if (mouseY > 125) {
                 currentPage = 3;
             } else if (mouseY < 125) {
                 currentPage = 2;
-                System.out.println("Test1");
             }
         }
+    }
+    private void duell(){
+        playBot = false;
+
+        board();
+    }
+
+    private void afterWonGame(){
+        fill(color(0,0,0));
+        textSize(50);
+        text("Win",10,275);
+    }
+
+    private void playBot() {
+        playBot = true;
+        if(board == null) playerIsWhite = new Random().nextBoolean();
+        board();
     }
 
     private void board() {
@@ -111,6 +131,7 @@ public class UI extends PApplet {
         if (board == null) {
             board = new Board();
             board.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+            if(playBot && !playerIsWhite) thread("findBestMove");
         }
         for (int i = 0; i < board.getBoard().length; i++) {
             switch (board.getBoard()[i]) {
@@ -143,6 +164,9 @@ public class UI extends PApplet {
         if (selection == null) {
             println("Window was closed or the user hit cancel.");
         } else {
+            board = new Board();
+            board.loadGame(selection.getAbsolutePath());
+            currentPage = 3;
             println("User selected " + selection.getAbsolutePath());
         }
     }

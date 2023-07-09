@@ -101,7 +101,7 @@ public class Board implements Chessable {
         boolean maximizingPlayer = true;
         int bestValue = Integer.MIN_VALUE;
         Move bestMove = null;
-        List<Move> bestMoves = new ArrayList<>();
+        List<Move> bestMoves = new LinkedList<>();
         for (Move move : getAllMoves().toArray(Move[]::new)) {
             move(move);
             int value = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !maximizingPlayer, isBlack);
@@ -429,7 +429,7 @@ public class Board implements Chessable {
         if(isControlled(i,byBlack,board) && ((byBlack)?i<1:i>-1)) return true;
         if(isControlled(i,byBlack,board)) return true;
         int[] temp = Arrays.copyOf(board,board.length);
-        temp[i] = 0;
+        temp[i] = (byBlack)?1:-1;
         if(isControlled(i,byBlack,temp)) return true;
         return false;
     }
