@@ -101,7 +101,7 @@ public class Board implements Chessable {
         boolean maximizingPlayer = true;
         int bestValue = Integer.MIN_VALUE;
         Move bestMove = null;
-        List<Move> bestMoves = new LinkedList<>();
+        List<Move> bestMoves = new ArrayList<>();
         for (Move move : getAllMoves().toArray(Move[]::new)) {
             move(move);
             int value = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !maximizingPlayer, isBlack);
