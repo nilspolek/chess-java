@@ -1,7 +1,7 @@
 # Chess-java
 [![Build Status](https://drone.webnils.de/api/badges/nilspolek/chess-java/status.svg)](https://drone.webnils.de/nilspolek/chess-java) [![](https://jitpack.io/v/nilspolek/chess-java.svg)](https://jitpack.io/#nilspolek/chess-java) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Dieses GitHub-Repository enthält eine Java-Bibliothek namens `com.github.nilspolek.Chessable`, die die Implementierung eines Schachbretts und von Schachzügen bietet.
+Dieses GitHub-Repository enthält eine Java-Bibliothek namens `com.github.nilspolek.chess-java`, die die Implementierung eines Schachbretts und von Schachzügen bietet.
 
 # Installation
 ## Maven
