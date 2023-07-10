@@ -70,7 +70,7 @@ public class UI extends PApplet {
 
     public void findBestMove() {
         botThinks = true;
-        board.move(board.findBestMove(1, playerIsWhite));
+        board.move(board.findBestMove(1, playerIsWhite,System.currentTimeMillis()+30_000));
         botThinks = false;
     }
 

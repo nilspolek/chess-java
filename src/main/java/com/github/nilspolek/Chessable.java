@@ -4,7 +4,6 @@ import java.util.stream.Stream;
 
 public interface Chessable {
     Stream<Move> getAllMoves();
-
     Stream<Move> pawnMoves(int i, boolean isBlack);
     Stream<Move> bishopMoves(int i, boolean isBlack);
     Stream<Move> ponyMoves(int i, boolean isBlack);
@@ -17,8 +16,7 @@ public interface Chessable {
     void loadGame(String path);
     void setWhite(boolean isWhite);
     int evaluate();
-    Move findBestMove(boolean isBlack);
-    Move findBestMove(int depth, boolean isBlack);
+    void findBestMove(int depth, long TIME_LIMIT);
     int getValue(int pice);
     String getFEN();
     Board setFEN(String FEN);
