@@ -95,4 +95,4 @@ Dieses Beispiel zeigt, wie Sie das `Board`-Objekt verwenden können, um den best
 
 ## Lizenz
 
-Dieses Projekt ist unter der MIT-Lizenz lizenziert. Weitere Informationen finden Sie in der [Lizenzdatei](LICENSE).
+Dieses Projekt ist unter der Apache License lizenziert. Weitere Informationen finden Sie in der [Lizenzdatei](LICENSE).
