@@ -1,10 +1,5 @@
 package com.github.nilspolek;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import processing.data.JSONObject;
-
 import java.io.*;
 import java.util.*;
 import java.util.function.Function;
@@ -18,6 +13,7 @@ public class Board extends Thread implements Chessable {
     // 5 = Dame
     // 6 = Koenig
     // Die werte in negativ sind schwarz
+    int enpesentable=0;
     Move bestMove = null;
     List<Move> bestMoves = new ArrayList<>();
     public boolean isWhite = true;
@@ -503,21 +499,26 @@ public class Board extends Thread implements Chessable {
 
     Stream<Move> pawnMoves(int i, boolean isBlack, int[] board) {
         Stream.Builder<Move> sb = Stream.builder();
+
         if (isBlack) {
-            if (board[i + 11] > 0 && board[i+11] != 9) sb.add(new Move(i, i + 11, -1));
-            if (board[i + 13] > 0  && board[i+13] != 9) sb.add(new Move(i, i + 13, -1));
+            if ((board[i + 11] > 0 || i+11 == enpesentable) && board[i+11] != 9) sb.add(new Move(i, i + 11, -1));
+            if ((board[i + 13] > 0 || i+13 == enpesentable) && board[i+13] != 9) sb.add(new Move(i, i + 13, -1));
             if (board[i + 12] == 0) {
                 if (110 <= i && 118 >= i) sb.add(new Move(i, i + 12, -1));
                 else sb.add(new Move(i, i + 12, -1));
-                if (board[i + 24] == 0 && 38 <= i && 46 >= i) sb.add(new Move(i, i + 24, -1));
+                if (board[i + 24] == 0 && 38 <= i && 46 >= i) {
+                    sb.add(new Move(i, i + 24, -1));
+                }
             }
         } else {
-            if (board[i - 11] < 0  && board[i-11] != 9) sb.add(new Move(i, i - 11, 1));
-            if (board[i - 13] < 0  && board[i-13] != 9) sb.add(new Move(i, i - 13, 1));
+            if ((board[i - 11] < 0 || i-11 == enpesentable) && board[i-11] != 9) sb.add(new Move(i, i - 11, 1));
+            if ((board[i - 13] < 0 || i-13 == enpesentable) && board[i-13] != 9) sb.add(new Move(i, i - 13, 1));
             if (board[i - 12] == 0) {
                 if (38 <= i && 46 >= i) sb.add(new Move(i, i - 12, +1));
                 else sb.add(new Move(i, i - 12, 1));
-                if (board[i - 24] == 0 && 97 <= i && 105 >= i) sb.add(new Move(i, i - 24, 1));
+                if (board[i - 24] == 0 && 97 <= i && 105 >= i) {
+                    sb.add(new Move(i, i - 24, 1));
+                }
             }
         }
         return sb.build();
@@ -646,6 +647,8 @@ public class Board extends Thread implements Chessable {
                 isWhite = !isWhite;
                 isCheckMate();
                 history.add(new SaveingPoint(Arrays.copyOf(board, board.length), isWhite, Arrays.copyOf(movedPices, movedPices.length)));
+                enpesentable = 0;
+                if(Math.abs(move.pice()) == 1 && Math.abs(move.to()-move.from()) == 24) enpesentable = (move.pice()<0)?move.from()+12:move.from()-12;
                 return true;
 
             } else if (move.to() == 32) {
@@ -656,6 +659,8 @@ public class Board extends Thread implements Chessable {
                 isWhite = !isWhite;
                 isCheckMate();
                 history.add(new SaveingPoint(Arrays.copyOf(board, board.length), isWhite, Arrays.copyOf(movedPices, movedPices.length)));
+                enpesentable = 0;
+                if(Math.abs(move.pice()) == 1 && Math.abs(move.to()-move.from()) == 24) enpesentable = (move.pice()<0)?move.from()+12:move.from()-12;
                 return true;
             }
         }
@@ -668,6 +673,8 @@ public class Board extends Thread implements Chessable {
                 isWhite = !isWhite;
                 isCheckMate();
                 history.add(new SaveingPoint(Arrays.copyOf(board, board.length), isWhite, Arrays.copyOf(movedPices, movedPices.length)));
+                enpesentable = 0;
+                if(Math.abs(move.pice()) == 1 && Math.abs(move.to()-move.from()) == 24) enpesentable = (move.pice()<0)?move.from()+12:move.from()-12;
                 return true;
 
             } else if (move.to() == 116) {
@@ -678,6 +685,8 @@ public class Board extends Thread implements Chessable {
                 isWhite = !isWhite;
                 isCheckMate();
                 history.add(new SaveingPoint(Arrays.copyOf(board, board.length), isWhite, Arrays.copyOf(movedPices, movedPices.length)));
+                enpesentable = 0;
+                if(Math.abs(move.pice()) == 1 && Math.abs(move.to()-move.from()) == 24) enpesentable = (move.pice()<0)?move.from()+12:move.from()-12;
                 return true;
             }
         }
@@ -686,6 +695,10 @@ public class Board extends Thread implements Chessable {
         isWhite = !isWhite;
         isCheckMate();
         history.add(new SaveingPoint(Arrays.copyOf(board, board.length), isWhite, Arrays.copyOf(movedPices, movedPices.length)));
+        if(move.to() == enpesentable)board[(move.pice()>0)?move.to()+12:move.to()-12] = 0;
+        if(Math.abs(move.pice()) == 1 && Math.abs(move.to()-move.from()) == 24){
+            enpesentable = (move.pice()<0)?move.from()+12:move.from()-12;
+        }
         return true;
     }
 }
