@@ -14,7 +14,7 @@ public class UI extends PApplet {
     boolean playBot = true;
     int clickedPice = 0;
     Board board;
-    String fileSelected;
+    File fileSelected;
     PImage bg;
     PImage selectedField;
     PShape[] shapes = new PShape[12];
@@ -30,13 +30,6 @@ public class UI extends PApplet {
     public static void main(String[] args) {
         String[] appArgs = {"Chess"};
         UI mySketch = new UI();
-        Board b = new Board();
-
-        b.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-        b.move(new Move(100, 88, 1));
-        b.saveGame("./test.json");
-        b.loadGame("./test.json");
-        System.out.println(b.getFEN());
         PApplet.runSketch(appArgs, mySketch);
     }
 
@@ -50,10 +43,14 @@ public class UI extends PApplet {
             case 4 -> duell();
         }
     }
-    public void keyPressed(){
-        if(board != null && (keyCode == 's' || keyCode == 'S')) {
+
+    public void keyPressed() {
+        if (board != null && (keyCode == 's' || keyCode == 'S')) {
             save = true;
             selectOutput("Select a file to write to:", "fileSelected");
+        }
+        if (board != null && (keyCode == 'z' || keyCode == 'Z')) {
+            board.undoMove();
         }
     }
 
@@ -70,7 +67,7 @@ public class UI extends PApplet {
 
     public void findBestMove() {
         botThinks = true;
-        board.move(board.findBestMove(1, playerIsWhite,System.currentTimeMillis()+30_000));
+        board.move(board.findBestMove(1, playerIsWhite, System.currentTimeMillis() + 30_000));
         botThinks = false;
     }
 
@@ -111,24 +108,30 @@ public class UI extends PApplet {
             } else if (mouseY > 125) {
                 currentPage = 3;
             } else if (mouseY < 125) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 currentPage = 2;
             }
         }
     }
-    private void duell(){
+
+    private void duell() {
         playBot = false;
         board();
     }
 
-    private void afterWonGame(){
-        fill(color(0,0,0));
+    private void afterWonGame() {
+        fill(color(0, 0, 0));
         textSize(50);
-        text("Win",10,275);
+        text("Win", 10, 275);
     }
 
     private void playBot() {
         playBot = true;
-        if(board == null) playerIsWhite = new Random().nextBoolean();
+        if (board == null) playerIsWhite = new Random().nextBoolean();
         board();
     }
 
@@ -137,7 +140,7 @@ public class UI extends PApplet {
         if (board == null) {
             board = new Board();
             board.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-            if(playBot && !playerIsWhite) thread("findBestMove");
+            if (playBot && !playerIsWhite) thread("findBestMove");
         }
         for (int i = 0; i < board.getBoard().length; i++) {
             switch (board.getBoard()[i]) {
@@ -162,22 +165,25 @@ public class UI extends PApplet {
     private void loadGame() {
         if (!fileSelectedbol) {
             selectInput("Datei auswählen:", "fileSelected");
+            currentPage = 3;
             fileSelectedbol = true;
         }
+
     }
 
     public void fileSelected(File selection) {
         if (selection == null) {
             println("Window was closed or the user hit cancel.");
         } else {
-            if(save){
+            fileSelected = selection;
+            if (save) {
                 board.saveGame(selection.getAbsolutePath());
                 exit();
-            }else {
+            } else {
                 board = new Board();
                 board.loadGame(selection.getAbsolutePath());
-                currentPage = 3;
-            };
+            }
+            ;
         }
     }
 }

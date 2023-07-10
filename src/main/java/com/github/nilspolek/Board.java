@@ -171,6 +171,9 @@ public class Board extends Thread implements Chessable {
     }
 
     public void undoMove() {
+        if (history.size() == 1){
+            return;
+        }
         history.remove(history.size() - 1);
         board = Arrays.copyOf(history.get(history.size() - 1).board(), board.length);
         isWhite = history.get(history.size() - 1).isWhite();
@@ -359,12 +362,18 @@ public class Board extends Thread implements Chessable {
 
     public int isCheckMate() {
         if (this.getAllMoves().noneMatch(e -> e.pice() < 0) && !isWhite) {
-            if(!isControlled(getKing(true),false)) return 2;
+            if(!isControlled(getKing(true),false)) {
+                System.out.println("Stalemate");
+                return 2;
+            }
             System.out.println("White won");
             return 1;
         }
         if (this.getAllMoves().noneMatch(e -> e.pice() > 0) && isWhite) {
-            if(!isControlled(getKing(false),true)) return -2;
+            if(!isControlled(getKing(false),true)) {
+                System.out.println("Stalemate");
+                return -2;
+            }
             System.out.println("Black won");
             return -1;
         }
