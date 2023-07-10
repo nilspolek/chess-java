@@ -1,4 +1,4 @@
-![Chess-java](https://github.com/nilspolek/chess-java/blob/43695b245298d5f50e2f18497baeeddd8c85c9e4/Chess-java.jpeg)
+![Chess-java](https://github.com/nilspolek/chess-java/blob/c6dbf8c84afe41f3ce5c2173bc2c03662ed2cd1b/Chess.jpeg)
 [![Build Status](https://drone.webnils.de/api/badges/nilspolek/chess-java/status.svg)](https://drone.webnils.de/nilspolek/chess-java) [![](https://jitpack.io/v/nilspolek/chess-java.svg)](https://jitpack.io/#nilspolek/chess-java) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Dieses GitHub-Repository enthält eine Java-Bibliothek namens `com.github.nilspolek.chess-java`, die die Implementierung eines Schachbretts und von Schachzügen bietet.
