@@ -39,5 +39,21 @@ class MiniMaxTest {
         assertEquals(m2.from(),115);
         assertEquals(m2.to(),31);
     }
-
+    @Test
+    void findMateIn1InAnotherThread() throws InterruptedException {
+        Board b = new Board();
+        b.setFEN("k4r2/ppp5/8/8/8/8/PPP5/K7");
+        b.setWhite(false);
+        b.depth = 4;
+        b.start();
+        int couner = 0;
+        while (!b.isInterrupted()){
+            couner++;
+            if(couner == 40)b.interrupt();
+            System.out.println("Waiting");
+            Thread.sleep(500);
+        }
+        System.out.println(b.bestMove);
+        b.bestMoves.forEach(System.out::println);
+    }
 }

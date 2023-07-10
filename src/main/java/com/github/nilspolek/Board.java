@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class Board implements Chessable {
+public class Board extends Thread implements Chessable {
     // 1 = Bauer
     // 2 = Turm
     // 3 = Springer
@@ -18,7 +18,11 @@ public class Board implements Chessable {
     // 5 = Dame
     // 6 = Koenig
     // Die werte in negativ sind schwarz
+    Move bestMove = null;
+    List<Move> bestMoves = new ArrayList<>();
     public boolean isWhite = true;
+    int depth = 3;
+    Move lastBestMove;
     boolean[] movedPices = new boolean[]{false, false, false, false, false, false};
     public int[] board = new int[144];
     List<SaveingPoint> history = new LinkedList<>();
@@ -92,6 +96,9 @@ public class Board implements Chessable {
         }
         return counter;
     }
+    public void run(){
+        lastBestMove = findBestMove(depth,!isWhite);
+    }
 
     public Move findBestMove(boolean isBlack) {
         return findBestMove(3, isBlack);
@@ -100,8 +107,6 @@ public class Board implements Chessable {
     public Move findBestMove(int depth, boolean isBlack) {
         boolean maximizingPlayer = true;
         int bestValue = Integer.MIN_VALUE;
-        Move bestMove = null;
-        List<Move> bestMoves = new ArrayList<>();
         for (Move move : getAllMoves().toArray(Move[]::new)) {
             move(move);
             int value = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !maximizingPlayer, isBlack);
