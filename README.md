@@ -70,18 +70,18 @@ Das `Board`-Objekt bietet auch andere nützliche Methoden, z. B. zum Abrufen der
 
 ```java
 import com.github.nilspolek.Board;
-import com.github.nilspolek.Move;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
         board.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 
-        Move move = board.findBestMove();
-        boolean success = board.move(move);
+        board.findBestMove();
+        while (board.getLastBestMove() == null)Thread.sleep(1000);
+        boolean success = board.move(board.getLastBestMove());
 
         if (success) {
-            System.out.println("Bester Zug: " + move);
+            System.out.println("Bester Zug: " + board.getLastBestMove());
             System.out.println("Neue Stellung:");
             System.out.println(board);
         } else {
@@ -95,4 +95,4 @@ Dieses Beispiel zeigt, wie Sie das `Board`-Objekt verwenden können, um den best
 
 ## Lizenz
 
-Dieses Projekt ist unter der MIT-Lizenz lizenziert. Weitere Informationen finden Sie in der [Lizenzdatei](LICENSE).
+Dieses Projekt ist unter der Apache License lizenziert. Weitere Informationen finden Sie in der [Lizenzdatei](LICENSE).
