@@ -77,7 +77,7 @@ public class Main {
         Board board = new Board();
         board.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 
-        Move move = board.findBestMove();
+        Move move = board.findBestMove(2,false,System.currentTimeMillis()+30_000);
         boolean success = board.move(move);
 
         if (success) {
