@@ -37,6 +37,11 @@ public class Board extends Thread implements Chessable {
         }
     }
 
+    public Move getLastBestMove() {
+        if(this.isAlive()) return null;
+        return lastBestMove;
+    }
+
     int[] getBoard(int[] board) {
         ArrayList<Integer> ib = new ArrayList<>();
         for (int i : board) if (i != 9) ib.add(i);
@@ -163,7 +168,6 @@ public class Board extends Thread implements Chessable {
                 minEval = Math.min(minEval, eval);
                 beta = Math.min(beta, eval);
                 if (beta <= alpha) break;
-
             }
 
             return minEval;
