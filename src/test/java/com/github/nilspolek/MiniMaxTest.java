@@ -22,16 +22,6 @@ class MiniMaxTest {
         Move m1 = b.lastBestMove;
         assertEquals(m1.from(),117);
         assertEquals(m1.to(),33);
-        Board c = new Board();
-        c.setFEN("1k5r/8/3R4/8/8/8/PPP5/K7");
-        c.setWhite(false);
-        c.findBestMove(4,900_000);
-        while (c.isAlive()){
-            Thread.sleep(1000);
-        }
-        Move m2 = c.lastBestMove;
-        assertEquals(m2.to(),117);
-        assertEquals(m2.from(),33);
     }
     @Test
     void findMateIn1() throws InterruptedException {

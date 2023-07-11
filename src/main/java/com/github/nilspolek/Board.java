@@ -12,8 +12,8 @@ public class Board extends Thread implements Chessable {
     // 4 = Leufer
     // 5 = Dame
     // 6 = Koenig
-    // Die werte in negativ sind schwarz
-    int enpesentable=0;
+    // die werte in negativ sind schwarz
+    int enpesentable = 0;
     Move bestMove = null;
     List<Move> bestMoves = new ArrayList<>();
     public boolean isWhite = true;
@@ -34,7 +34,7 @@ public class Board extends Thread implements Chessable {
     }
 
     public Move getLastBestMove() {
-        if(this.isAlive()) return null;
+        if (this.isAlive()) return null;
         return lastBestMove;
     }
 
@@ -58,9 +58,7 @@ public class Board extends Thread implements Chessable {
                 FileWriter myWriter = new FileWriter(path);
                 myWriter.write(sb.toString());
                 myWriter.close();
-            } else {
-                System.out.println("File already exists.");
-            }
+            } else System.out.println("File already exists.");
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -98,12 +96,14 @@ public class Board extends Thread implements Chessable {
         }
         return counter;
     }
-    public void run(){
+
+    public void run() {
         long startTime = System.currentTimeMillis();
         long endTime = startTime + TIME_LIMIT;
-        lastBestMove = findBestMove(depth,!isWhite,endTime);
+        lastBestMove = findBestMove(depth, !isWhite, endTime);
     }
-    public void findBestMove(int depth,long TIME_LIMIT){
+
+    public void findBestMove(int depth, long TIME_LIMIT) {
         this.depth = depth;
         this.TIME_LIMIT = TIME_LIMIT;
         this.start();
@@ -112,24 +112,22 @@ public class Board extends Thread implements Chessable {
     public void findBestMove() {
         depth = 3;
         this.start();
-        TIME_LIMIT=30_000;
+        TIME_LIMIT = 30_000;
     }
 
-    public Move findBestMove(int depth, boolean isBlack,long endTime) {
+    public Move findBestMove(int depth, boolean isBlack, long endTime) {
         boolean maximizingPlayer = true;
         int bestValue = Integer.MIN_VALUE;
         for (Move move : getAllMoves().toArray(Move[]::new)) {
             move(move);
-            int value = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !maximizingPlayer, isBlack,endTime);
+            int value = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !maximizingPlayer, isBlack, endTime);
             undoMove();
             if (value > bestValue) {
                 bestValue = value;
                 bestMove = move;
                 bestMoves.clear();
                 bestMoves.add(move);
-            } else if (value == bestValue) {
-                bestMoves.add(move);
-            }
+            } else if (value == bestValue) bestMoves.add(move);
         }
         if (!bestMoves.isEmpty()) {
             int randomIndex = new Random().nextInt(bestMoves.size());
@@ -139,7 +137,7 @@ public class Board extends Thread implements Chessable {
     }
 
 
-    private int minimax(int depth, int alpha, int beta, boolean maximizingPlayer, boolean isBlack,long endTime) {
+    private int minimax(int depth, int alpha, int beta, boolean maximizingPlayer, boolean isBlack, long endTime) {
         if (depth == 0 || isCheckMate() != 0) return (isBlack) ? -evaluate() : evaluate();
         if (System.currentTimeMillis() >= endTime) return (isBlack) ? -evaluate() : evaluate();
 
@@ -147,7 +145,7 @@ public class Board extends Thread implements Chessable {
             int maxEval = Integer.MIN_VALUE;
             for (Move move : getAllMoves().toArray(Move[]::new)) {
                 move(move);
-                int eval = minimax(depth - 1, alpha, beta, false, isBlack,endTime);
+                int eval = minimax(depth - 1, alpha, beta, false, isBlack, endTime);
                 undoMove();
                 maxEval = Math.max(maxEval, eval);
                 alpha = Math.max(alpha, eval);
@@ -159,21 +157,18 @@ public class Board extends Thread implements Chessable {
             int minEval = Integer.MAX_VALUE;
             for (Move move : getAllMoves().toArray(Move[]::new)) {
                 move(move);
-                int eval = minimax(depth - 1, alpha, beta, true, isBlack,endTime);
+                int eval = minimax(depth - 1, alpha, beta, true, isBlack, endTime);
                 undoMove();
                 minEval = Math.min(minEval, eval);
                 beta = Math.min(beta, eval);
                 if (beta <= alpha) break;
             }
-
             return minEval;
         }
     }
 
     public void undoMove() {
-        if (history.size() == 1){
-            return;
-        }
+        if (history.size() == 1) return;
         history.remove(history.size() - 1);
         board = Arrays.copyOf(history.get(history.size() - 1).board(), board.length);
         isWhite = history.get(history.size() - 1).isWhite();
@@ -181,30 +176,19 @@ public class Board extends Thread implements Chessable {
     }
 
     public int getValue(int pice) {
+        int returnVal = 0;
         switch (Math.abs(pice)) {
-            case 1 -> {
-                return (pice > 0) ? 1 : -1;
-            }
-            case 2 -> {
-                return (pice > 0) ? 5 : -5;
-            }
-            case 3, 4 -> {
-                return (pice > 0) ? 3 : -3;
-            }
-            case 5 -> {
-                return (pice > 0) ? 9 : -9;
-            }
-            case 6 -> {
-                return (pice > 0) ? 100 : -100;
-            }
-            default -> {
-                return 0;
-            }
+            case 1 -> returnVal = (pice > 0) ? 1 : -1;
+            case 2 -> returnVal = (pice > 0) ? 5 : -5;
+            case 3, 4 -> returnVal = (pice > 0) ? 3 : -3;
+            case 5 -> returnVal = (pice > 0) ? 9 : -9;
+            case 6 -> returnVal = (pice > 0) ? 100 : -100;
         }
+        return returnVal;
     }
 
     public String getFEN() {
-        if(history.size() == 0) return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+        if (history.size() == 0) return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         return getFEN(history.get(history.size() - 1));
     }
 
@@ -217,11 +201,8 @@ public class Board extends Thread implements Chessable {
                 stringBuilder.append(counter);
                 stringBuilder.append(getPiceFromPice(tempBoard[i]));
                 counter = 0;
-            } else if (0 == tempBoard[i]) {
-                counter++;
-            } else {
-                stringBuilder.append(getPiceFromPice(tempBoard[i]));
-            }
+            } else if (0 == tempBoard[i]) counter++;
+            else stringBuilder.append(getPiceFromPice(tempBoard[i]));
             if ((i + 1) % 8 == 0) {
                 if (counter != 0) {
                     stringBuilder.append(counter);
@@ -250,7 +231,7 @@ public class Board extends Thread implements Chessable {
 
 
     public Board setFEN(String FEN) {
-        for (int i = 0; i < board.length; i++) if(board[i] != 9)board[i] = 0;
+        for (int i = 0; i < board.length; i++) if (board[i] != 9) board[i] = 0;
         if (FEN.split(" ").length > 2) {
             isWhite = FEN.split(" ")[1].equals('w');
             if (!FEN.split(" ")[2].equals('-')) {
@@ -311,27 +292,16 @@ public class Board extends Thread implements Chessable {
     }
 
     public char getPiceFromPice(int i) {
+        char returnVal = '\u0000';
         switch (Math.abs(i)) {
-            case 1 -> {
-                return (i > 0) ? 'P' : 'p';
-            }
-            case 2 -> {
-                return (i > 0) ? 'R' : 'r';
-            }
-            case 3 -> {
-                return (i > 0) ? 'N' : 'n';
-            }
-            case 4 -> {
-                return (i > 0) ? 'B' : 'b';
-            }
-            case 5 -> {
-                return (i > 0) ? 'Q' : 'q';
-            }
-            case 6 -> {
-                return (i > 0) ? 'K' : 'k';
-            }
+            case 1 -> returnVal = (i > 0) ? 'P' : 'p';
+            case 2 -> returnVal = (i > 0) ? 'R' : 'r';
+            case 3 -> returnVal = (i > 0) ? 'N' : 'n';
+            case 4 -> returnVal = (i > 0) ? 'B' : 'b';
+            case 5 -> returnVal = (i > 0) ? 'Q' : 'q';
+            case 6 -> returnVal = (i > 0) ? 'K' : 'k';
         }
-        return 'X';
+        return (returnVal == '\u0000') ? 'X' : returnVal;
     }
 
     public boolean isControlled(int field, boolean byBlack) {
@@ -362,7 +332,7 @@ public class Board extends Thread implements Chessable {
 
     public int isCheckMate() {
         if (this.getAllMoves().noneMatch(e -> e.pice() < 0) && !isWhite) {
-            if(!isControlled(getKing(true),false)) {
+            if (!isControlled(getKing(true), false)) {
                 System.out.println("Stalemate");
                 return 2;
             }
@@ -370,7 +340,7 @@ public class Board extends Thread implements Chessable {
             return 1;
         }
         if (this.getAllMoves().noneMatch(e -> e.pice() > 0) && isWhite) {
-            if(!isControlled(getKing(false),true)) {
+            if (!isControlled(getKing(false), true)) {
                 System.out.println("Stalemate");
                 return -2;
             }
@@ -389,52 +359,30 @@ public class Board extends Thread implements Chessable {
     }
 
     Stream<Move> getMovesWithoutCheck(int field, int[] board) {
-
+        Stream<Move> returnVal;
         boolean isBlack = board[field] < 0;
         switch (Math.abs(board[field])) {
-            case 1 -> {
-                return this.pawnMoves(field, isBlack, board);
-            }
-            case 2 -> {
-                return this.rookMoves(field, isBlack, board);
-            }
-            case 3 -> {
-                return this.ponyMoves(field, isBlack, board);
-            }
-            case 4 -> {
-                return this.bishopMoves(field, isBlack, board);
-            }
-            case 5 -> {
-                return this.queenMoves(field, isBlack, board);
-            }
-            case 6 -> {
-                return this.kingMoves(field, isBlack, board);
-            }
-            default -> {
-                return Stream.empty();
-            }
+            case 1 -> returnVal = this.pawnMoves(field, isBlack, board);
+            case 2 -> returnVal = this.rookMoves(field, isBlack, board);
+            case 3 -> returnVal = this.ponyMoves(field, isBlack, board);
+            case 4 -> returnVal = this.bishopMoves(field, isBlack, board);
+            case 5 -> returnVal = this.queenMoves(field, isBlack, board);
+            case 6 -> returnVal = this.kingMoves(field, isBlack, board);
+            default -> returnVal = Stream.empty();
         }
+        return returnVal;
     }
 
     Stream<Move> getMovesWithoutCheckExcludingKing(int field, int[] board) {
-
         boolean isBlack = board[field] < 0;
+        Stream<Move> returnVal;
         switch (Math.abs(board[field])) {
-            case 1 -> {
-                return this.pawnMoves(field, isBlack, board);
-            }
-            case 2 -> {
-                return this.rookMoves(field, isBlack, board);
-            }
-            case 3 -> {
-                return this.ponyMoves(field, isBlack, board);
-            }
-            case 4 -> {
-                return this.bishopMoves(field, isBlack, board);
-            }
-            case 5 -> {
-                return this.queenMoves(field, isBlack, board);
-            }
+            case 1 -> returnVal = this.pawnMoves(field, isBlack, board);
+            case 2 -> returnVal = this.rookMoves(field, isBlack, board);
+            case 3 -> returnVal = this.ponyMoves(field, isBlack, board);
+            case 4 -> returnVal = this.bishopMoves(field, isBlack, board);
+            case 5 -> returnVal = this.queenMoves(field, isBlack, board);
+
             case 6 -> {
                 Stream.Builder<Move> sb = Stream.builder();
                 if (board[field - 11] == 0) sb.add(new Move(field, field - 11, (board[field] > 0) ? -6 : 6));
@@ -445,20 +393,19 @@ public class Board extends Thread implements Chessable {
                 if (board[field + 11] == 0) sb.add(new Move(field, field + 11, (board[field] > 0) ? -6 : 6));
                 if (board[field + 12] == 0) sb.add(new Move(field, field + 12, (board[field] > 0) ? -6 : 6));
                 if (board[field + 13] == 0) sb.add(new Move(field, field + 13, (board[field] > 0) ? -6 : 6));
-                return sb.build();
+                returnVal = sb.build();
             }
-            default -> {
-                return Stream.empty();
-            }
+            default -> returnVal = Stream.empty();
         }
+        return returnVal;
     }
-    boolean isControlledAfterCapture(int i,boolean byBlack,int[] board){
-        if(isControlled(i,byBlack,board) && ((byBlack)?i<1:i>-1)) return true;
-        if(isControlled(i,byBlack,board)) return true;
-        int[] temp = Arrays.copyOf(board,board.length);
-        temp[i] = (byBlack)?1:-1;
-        if(isControlled(i,byBlack,temp)) return true;
-        return false;
+
+    boolean isControlledAfterCapture(int i, boolean byBlack, int[] board) {
+        if (isControlled(i, byBlack, board) && ((byBlack) ? i < 1 : i > -1)) return true;
+        if (isControlled(i, byBlack, board)) return true;
+        int[] temp = Arrays.copyOf(board, board.length);
+        temp[i] = (byBlack) ? 1 : -1;
+        return isControlled(i, byBlack, temp);
     }
 
     Stream<Move> kingMoves(int i, boolean isBlack, int[] board) {
@@ -499,26 +446,31 @@ public class Board extends Thread implements Chessable {
 
     Stream<Move> pawnMoves(int i, boolean isBlack, int[] board) {
         Stream.Builder<Move> sb = Stream.builder();
-
         if (isBlack) {
-            if ((board[i + 11] > 0 || i+11 == enpesentable) && board[i+11] != 9) sb.add(new Move(i, i + 11, -1));
-            if ((board[i + 13] > 0 || i+13 == enpesentable) && board[i+13] != 9) sb.add(new Move(i, i + 13, -1));
+            if (board[i + 11] > 0 && i + 11 >= 110) sb.add(new Move(i, i + 11, -5));
+            else if ((board[i + 11] > 0 || i + 11 == enpesentable) && board[i + 11] != 9)
+                sb.add(new Move(i, i + 11, -1));
+            if (board[i + 13] > 0 && i + 13 >= 110) sb.add(new Move(i, i + 13, -5));
+            else if ((board[i + 13] > 0 || i + 13 == enpesentable) && board[i + 13] != 9)
+                sb.add(new Move(i, i + 13, -1));
             if (board[i + 12] == 0) {
-                if (110 <= i && 118 >= i) sb.add(new Move(i, i + 12, -1));
+                if (i >= 98) sb.add(new Move(i, i + 12, -5));
+                else if (110 <= i && 118 >= i) sb.add(new Move(i, i + 12, -1));
                 else sb.add(new Move(i, i + 12, -1));
-                if (board[i + 24] == 0 && 38 <= i && 46 >= i) {
-                    sb.add(new Move(i, i + 24, -1));
-                }
+                if (board[i + 24] == 0 && 38 <= i && 46 >= i) sb.add(new Move(i, i + 24, -1));
             }
         } else {
-            if ((board[i - 11] < 0 || i-11 == enpesentable) && board[i-11] != 9) sb.add(new Move(i, i - 11, 1));
-            if ((board[i - 13] < 0 || i-13 == enpesentable) && board[i-13] != 9) sb.add(new Move(i, i - 13, 1));
+            if (board[i - 11] < 0 && i - 11 < 34) sb.add(new Move(i, i - 11, 5));
+            else if ((board[i - 11] < 0 || i - 11 == enpesentable) && board[i - 11] != 9)
+                sb.add(new Move(i, i - 11, 1));
+            if (board[i - 13] < 0 && i - 13 < 34) sb.add(new Move(i, i - 13, 5));
+            else if ((board[i - 13] < 0 || i - 13 == enpesentable) && board[i - 13] != 9)
+                sb.add(new Move(i, i - 13, 1));
             if (board[i - 12] == 0) {
-                if (38 <= i && 46 >= i) sb.add(new Move(i, i - 12, +1));
+                if (i - 12 < 34) sb.add(new Move(i, i - 12, 5));
+                else if (38 <= i && 46 >= i) sb.add(new Move(i, i - 12, 1));
                 else sb.add(new Move(i, i - 12, 1));
-                if (board[i - 24] == 0 && 97 <= i && 105 >= i) {
-                    sb.add(new Move(i, i - 24, 1));
-                }
+                if (board[i - 24] == 0 && 97 <= i && 105 >= i) sb.add(new Move(i, i - 24, 1));
             }
         }
         return sb.build();
@@ -526,9 +478,7 @@ public class Board extends Thread implements Chessable {
 
     public Stream<Move> getAllMoves() {
         Stream<Move> s = Stream.of(new Move(1, 1, 1));
-        for (int i = 0; i < board.length; i++) {
-            s = Stream.concat(getMoves(i), s);
-        }
+        for (int i = 0; i < board.length; i++) s = Stream.concat(getMoves(i), s);
         return s.filter(e -> {
             return e.from() != 1 || e.to() != 1 || e.pice() != 1;
         }).distinct();
@@ -579,9 +529,7 @@ public class Board extends Thread implements Chessable {
     }
 
     public int getKing(boolean isBlack) {
-        for (int i = 0; i < board.length; i++) {
-            if ((isBlack) ? board[i] == -6 : board[i] == 6) return i;
-        }
+        for (int i = 0; i < board.length; i++) if ((isBlack) ? board[i] == -6 : board[i] == 6) return i;
         return 0;
     }
 
@@ -614,7 +562,7 @@ public class Board extends Thread implements Chessable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < board.length; i++) {
-            if(board[i]!=9) sb.append(board[i]);
+            if (board[i] != 9) sb.append(board[i]);
             if ((i + 1) % 12 == 0) sb.append('\n');
         }
         return sb.toString();
@@ -628,10 +576,7 @@ public class Board extends Thread implements Chessable {
     }
 
     public boolean move(Move move) {
-        if (isWhite == move.pice() < 0 || getMoves(move.from()).noneMatch(e -> e.to() == move.to())) {
-            System.out.println("Move not Possible" + move);
-            return false;
-        }
+        if (isWhite == move.pice() < 0 || getAllMoves().noneMatch(e -> e.to() == move.to())) return false;
         if (move.from() == 26) movedPices[0] = true;
         if (move.from() == 110) movedPices[3] = true;
         if (move.from() == 117) movedPices[5] = true;
@@ -648,7 +593,8 @@ public class Board extends Thread implements Chessable {
                 isCheckMate();
                 history.add(new SaveingPoint(Arrays.copyOf(board, board.length), isWhite, Arrays.copyOf(movedPices, movedPices.length)));
                 enpesentable = 0;
-                if(Math.abs(move.pice()) == 1 && Math.abs(move.to()-move.from()) == 24) enpesentable = (move.pice()<0)?move.from()+12:move.from()-12;
+                if (Math.abs(move.pice()) == 1 && Math.abs(move.to() - move.from()) == 24)
+                    enpesentable = (move.pice() < 0) ? move.from() + 12 : move.from() - 12;
                 return true;
 
             } else if (move.to() == 32) {
@@ -660,7 +606,8 @@ public class Board extends Thread implements Chessable {
                 isCheckMate();
                 history.add(new SaveingPoint(Arrays.copyOf(board, board.length), isWhite, Arrays.copyOf(movedPices, movedPices.length)));
                 enpesentable = 0;
-                if(Math.abs(move.pice()) == 1 && Math.abs(move.to()-move.from()) == 24) enpesentable = (move.pice()<0)?move.from()+12:move.from()-12;
+                if (Math.abs(move.pice()) == 1 && Math.abs(move.to() - move.from()) == 24)
+                    enpesentable = (move.pice() < 0) ? move.from() + 12 : move.from() - 12;
                 return true;
             }
         }
@@ -674,7 +621,8 @@ public class Board extends Thread implements Chessable {
                 isCheckMate();
                 history.add(new SaveingPoint(Arrays.copyOf(board, board.length), isWhite, Arrays.copyOf(movedPices, movedPices.length)));
                 enpesentable = 0;
-                if(Math.abs(move.pice()) == 1 && Math.abs(move.to()-move.from()) == 24) enpesentable = (move.pice()<0)?move.from()+12:move.from()-12;
+                if (Math.abs(move.pice()) == 1 && Math.abs(move.to() - move.from()) == 24)
+                    enpesentable = (move.pice() < 0) ? move.from() + 12 : move.from() - 12;
                 return true;
 
             } else if (move.to() == 116) {
@@ -686,7 +634,8 @@ public class Board extends Thread implements Chessable {
                 isCheckMate();
                 history.add(new SaveingPoint(Arrays.copyOf(board, board.length), isWhite, Arrays.copyOf(movedPices, movedPices.length)));
                 enpesentable = 0;
-                if(Math.abs(move.pice()) == 1 && Math.abs(move.to()-move.from()) == 24) enpesentable = (move.pice()<0)?move.from()+12:move.from()-12;
+                if (Math.abs(move.pice()) == 1 && Math.abs(move.to() - move.from()) == 24)
+                    enpesentable = (move.pice() < 0) ? move.from() + 12 : move.from() - 12;
                 return true;
             }
         }
@@ -695,10 +644,10 @@ public class Board extends Thread implements Chessable {
         isWhite = !isWhite;
         isCheckMate();
         history.add(new SaveingPoint(Arrays.copyOf(board, board.length), isWhite, Arrays.copyOf(movedPices, movedPices.length)));
-        if(move.to() == enpesentable)board[(move.pice()>0)?move.to()+12:move.to()-12] = 0;
-        if(Math.abs(move.pice()) == 1 && Math.abs(move.to()-move.from()) == 24){
-            enpesentable = (move.pice()<0)?move.from()+12:move.from()-12;
-        }
+        if (move.to() == enpesentable) board[(move.pice() > 0) ? move.to() + 12 : move.to() - 12] = 0;
+        enpesentable = 0;
+        if (Math.abs(move.pice()) == 1 && Math.abs(move.to() - move.from()) == 24)
+            enpesentable = (move.pice() < 0) ? move.from() + 12 : move.from() - 12;
         return true;
     }
 }

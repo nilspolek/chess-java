@@ -58,7 +58,8 @@ public class UI extends PApplet {
         if (board != null) {
             int row = (int) (mouseY / 62.5);
             int col = (int) (mouseX / 62.5);
-            if (!botThinks && board.move(new Move(clickedPice, (row * 12) + 26 + col, board.board[clickedPice])) && playBot) {
+            Move m = board.getAllMoves().filter(e -> (e.from()==clickedPice && e.to()==(row * 12) + 26 + col)).findFirst().orElse(null);
+            if (!botThinks && (m == null || board.move(m)) && playBot) {
                 thread("findBestMove");
             }
             clickedPice = row * 12 + 26 + col;
