@@ -52,6 +52,13 @@ public class UI extends PApplet {
         if (board != null && (keyCode == 'z' || keyCode == 'Z')) {
             board.undoMove();
         }
+        if (board != null && (keyCode == 'y' || keyCode == 'Y')) {
+            board.stopProcessing();
+        }
+        if (board != null && (keyCode == 'x' || keyCode == 'X')) {
+            board = new Board();
+            board.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        }
     }
 
     public void mousePressed() {
@@ -59,7 +66,7 @@ public class UI extends PApplet {
             int row = (int) (mouseY / 62.5);
             int col = (int) (mouseX / 62.5);
             Move m = board.getAllMoves().filter(e -> (e.from()==clickedPice && e.to()==(row * 12) + 26 + col)).findFirst().orElse(null);
-            if (!botThinks && (m == null || board.move(m)) && playBot) {
+            if (!botThinks && m != null && board.move(m) && playBot) {
                 thread("findBestMove");
             }
             clickedPice = row * 12 + 26 + col;
