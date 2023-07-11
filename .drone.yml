@@ -9,7 +9,7 @@ steps:
       - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       - mvn clean package
       - mkdir Schachprojekt
-      - cp -r ./src/main/resources ./Schachprojekt
+      - cp -r ./src/main/resources/.app/ ./Schachprojekt
       - cp ./target/chess-java-1.0-jar-with-dependencies.jar ./Schachprojekt/chess-java.jar
       - zip -r Schachprojekt.zip ./Schachprojekt
       - mv Schachprojekt.zip ./Schachprojekt/Schachprojekt.zip
