@@ -17,7 +17,7 @@ Dieses GitHub-Repository van Nils Polek (Matrikelnummer 5428131) enthält eine J
 <dependency>  
 <groupId>com.github.nilspolek</groupId>  
 <artifactId>chess-java</artifactId>  
-<version>LATEST</version>  
+<version>v1.2</version>  
 </dependency>  
 ```  
   
@@ -124,7 +124,7 @@ void findMateIn1() throws InterruptedException {
 Es wird eine Ui mit ausgeliefert die Processing benutzt 
 Diese kann mit dem command gestartet werden
 ``` PowerShell
-wget -o chess.zip https://github.com/nilspolek/chess-java/releases/download/v1.1.9b/Schachprojekt.zip
+wget -o chess.zip https://github.com/nilspolek/chess-java/releases/download/v1.2/Schachprojekt.zip
 unzip chess.zip
 java -jar ./chess/chess-java.jar
 ```
