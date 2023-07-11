@@ -135,7 +135,7 @@ Taste| Event
 z| Geht einen Zug zurück
 s | speichert das Spiel
 x | Startet ein neues Spiel
-y | Stoppt die Berechnung von MinMax
+y | Stoppt die Berechnung von MinMax(nachdem jeder zug mindestens einmal durchspielt wurde)
 
 ### Landing Page
 ![Landing Page](https://github.com/nilspolek/chess-java/blob/d39d061ad0fbde08f363eb0d50a3475af352f98c/landingPage.png?raw=true)
