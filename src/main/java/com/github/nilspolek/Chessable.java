@@ -17,6 +17,7 @@ public interface Chessable {
     void setWhite(boolean isWhite);
     int evaluate();
     void findBestMove(int depth, long TIME_LIMIT);
+    void stopProcessing();
     int getValue(int pice);
     String getFEN();
     Board setFEN(String FEN);

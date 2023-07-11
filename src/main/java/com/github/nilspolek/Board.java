@@ -15,6 +15,7 @@ public class Board extends Thread implements Chessable {
     // die werte in negativ sind schwarz
     int enpesentable = 0;
     Move bestMove = null;
+    boolean isStopt = false;
     List<Move> bestMoves = new ArrayList<>();
     public boolean isWhite = true;
     int depth = 3;
@@ -42,6 +43,9 @@ public class Board extends Thread implements Chessable {
         ArrayList<Integer> ib = new ArrayList<>();
         for (int i : board) if (i != 9) ib.add(i);
         return ib.stream().mapToInt(Integer::intValue).toArray();
+    }
+    public void stopProcessing(){
+        isStopt = true;
     }
 
     public int[] getBoard() {
@@ -116,6 +120,7 @@ public class Board extends Thread implements Chessable {
     }
 
     public Move findBestMove(int depth, boolean isBlack, long endTime) {
+        isStopt = false;
         boolean maximizingPlayer = true;
         int bestValue = Integer.MIN_VALUE;
         for (Move move : getAllMoves().toArray(Move[]::new)) {
@@ -135,11 +140,9 @@ public class Board extends Thread implements Chessable {
         }
         return bestMove;
     }
-
-
     private int minimax(int depth, int alpha, int beta, boolean maximizingPlayer, boolean isBlack, long endTime) {
         if (depth == 0 || isCheckMate() != 0) return (isBlack) ? -evaluate() : evaluate();
-        if (System.currentTimeMillis() >= endTime) return (isBlack) ? -evaluate() : evaluate();
+        if (System.currentTimeMillis() >= endTime || isStopt) return (isBlack) ? -evaluate() : evaluate();
 
         if (maximizingPlayer) {
             int maxEval = Integer.MIN_VALUE;
