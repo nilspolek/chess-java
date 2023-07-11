@@ -53,7 +53,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.example.Main</mainClass>
+                            <mainClass>com.github.nilspolek.UI</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
