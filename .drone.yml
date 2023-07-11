@@ -14,7 +14,7 @@ steps:
       - zip -r Schachprojekt.zip ./Schachprojekt
       - mv Schachprojekt.zip ./Schachprojekt/Schachprojekt.zip
       - cd Schachprojekt
-      - rm -r ./resources
+      - rm -r ./.app
   - name: discord notification
     image: appleboy/drone-discord
     settings:
