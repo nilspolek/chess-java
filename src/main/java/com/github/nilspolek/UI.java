@@ -47,7 +47,7 @@ public class UI extends PApplet {
     public void keyPressed() {
         if (board != null && (keyCode == 's' || keyCode == 'S')) {
             save = true;
-            selectOutput("Select a file to write to:", "fileSelected");
+            selectOutput("Select a file to write to:", "fileSelected",new File("Chess.txt"));
         }
         if (board != null && (keyCode == 'z' || keyCode == 'Z')) {
             board.undoMove();
