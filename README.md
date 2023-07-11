@@ -123,6 +123,7 @@ void findMateIn1() throws InterruptedException {
 ## UI
 Es wird eine Ui mit ausgeliefert die Processing benutzt
 Diese kann mit dem command gestartet werden
+Im PlayBot modus wird dabei per zufall entschieden wer Weiss spielt
 ``` PowerShell
 wget -o chess.zip https://github.com/nilspolek/chess-java/releases/download/v1.1.9b/Schachprojekt.zip
 unzip chess.zip
