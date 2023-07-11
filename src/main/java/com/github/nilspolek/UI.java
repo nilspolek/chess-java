@@ -40,7 +40,8 @@ public class UI extends PApplet {
             case 1 -> landingPage();
             case 2 -> loadGame();
             case 3 -> playBot();
-            case 4 -> duell();
+            case 4 -> duel();
+            case 5 -> afterWonGame();
         }
     }
 
@@ -56,6 +57,7 @@ public class UI extends PApplet {
             board.stopProcessing();
         }
         if (board != null && (keyCode == 'x' || keyCode == 'X')) {
+            currentPage = 4;
             board = new Board();
             board.setFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         }
@@ -69,6 +71,7 @@ public class UI extends PApplet {
             if (!botThinks && m != null && board.move(m) && playBot) {
                 thread("findBestMove");
             }
+            if(board.isCheckMate() != 0) currentPage = 5;
             clickedPice = row * 12 + 26 + col;
         }
     }
@@ -76,6 +79,7 @@ public class UI extends PApplet {
     public void findBestMove() {
         botThinks = true;
         board.move(board.findBestMove(1, playerIsWhite, System.currentTimeMillis() + 30_000));
+        if(board.isCheckMate() != 0) currentPage = 5;
         botThinks = false;
     }
 
@@ -126,7 +130,7 @@ public class UI extends PApplet {
         }
     }
 
-    private void duell() {
+    private void duel() {
         playBot = false;
         board();
     }
@@ -134,7 +138,15 @@ public class UI extends PApplet {
     private void afterWonGame() {
         fill(color(0, 0, 0));
         textSize(50);
-        text("Win", 10, 275);
+        if (board != null) {
+            switch (board.isCheckMate()) {
+                case 1 -> text("White won", 135, 250);
+                case 2, -2 -> text("Stalemate", 138, 250);
+                case -1 -> text("Black won", 138, 250);
+                default -> text("An Error Accoured", 46, 250);
+            }
+        }
+        text("New Game: X", 94, 325);
     }
 
     private void playBot() {

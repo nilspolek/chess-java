@@ -44,7 +44,8 @@ public class Board extends Thread implements Chessable {
         for (int i : board) if (i != 9) ib.add(i);
         return ib.stream().mapToInt(Integer::intValue).toArray();
     }
-    public void stopProcessing(){
+
+    public void stopProcessing() {
         isStopt = true;
     }
 
@@ -58,13 +59,11 @@ public class Board extends Thread implements Chessable {
         try {
             File myObj = new File(path);
             if (myObj.createNewFile()) {
-                System.out.println("File created: " + myObj.getName());
                 FileWriter myWriter = new FileWriter(path);
                 myWriter.write(sb.toString());
                 myWriter.close();
-            } else System.out.println("File already exists.");
+            }
         } catch (IOException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
         }
     }
@@ -80,7 +79,6 @@ public class Board extends Thread implements Chessable {
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
         }
     }
@@ -140,6 +138,7 @@ public class Board extends Thread implements Chessable {
         }
         return bestMove;
     }
+
     private int minimax(int depth, int alpha, int beta, boolean maximizingPlayer, boolean isBlack, long endTime) {
         if (depth == 0 || isCheckMate() != 0) return (isBlack) ? -evaluate() : evaluate();
         if (System.currentTimeMillis() >= endTime || isStopt) return (isBlack) ? -evaluate() : evaluate();
@@ -335,19 +334,12 @@ public class Board extends Thread implements Chessable {
 
     public int isCheckMate() {
         if (this.getAllMoves().noneMatch(e -> e.pice() < 0) && !isWhite) {
-            if (!isControlled(getKing(true), false)) {
-                System.out.println("Stalemate");
+            if (!isControlled(getKing(true), false))
                 return 2;
-            }
-            System.out.println("White won");
             return 1;
         }
         if (this.getAllMoves().noneMatch(e -> e.pice() > 0) && isWhite) {
-            if (!isControlled(getKing(false), true)) {
-                System.out.println("Stalemate");
-                return -2;
-            }
-            System.out.println("Black won");
+            if (!isControlled(getKing(false), true)) return -2;
             return -1;
         }
         return 0;
