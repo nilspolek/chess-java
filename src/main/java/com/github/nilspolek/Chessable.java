@@ -22,7 +22,6 @@ public interface Chessable {
     String getFEN();
     Board setFEN(String FEN);
     char getPice(int i);
-    char getPiceFromPice(int i);
     boolean isControlled(int field, boolean byBlack);
     Stream<Move> getMoves(int field);
     int isCheckMate();
