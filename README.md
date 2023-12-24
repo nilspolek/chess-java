@@ -1,5 +1,5 @@
 ![Chess-java](https://github.com/nilspolek/chess-java/blob/master/Chess.jpeg?raw=true)
-[![Build Status](https://drone.webnils.de/api/badges/nilspolek/chess-java/status.svg)](https://drone.webnils.de/nilspolek/chess-java) [![](https://jitpack.io/v/nilspolek/chess-java.svg)](https://jitpack.io/#nilspolek/chess-java) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![](https://jitpack.io/v/nilspolek/chess-java.svg)](https://jitpack.io/#nilspolek/chess-java) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Dieses GitHub-Repository van Nils Polek (Matrikelnummer 5428131) enthält eine Java-Bibliothek namens `com.github.nilspolek.chess-java`, die die Implementierung eines Schachspiels bietet.
 
